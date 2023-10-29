@@ -1,12 +1,14 @@
 {
   "name": "testapp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "author": {
-    "name": "Microsoft Corporation, Visual Studio Code Team"
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
   },
-  "license": "",
-  "dependencies": {},
+  "license": "MIT",
+  
   "devDependencies": {
     "mime": "3.0.0",
     "browser-sync": "2.29.3",
@@ -16,6 +18,23 @@
     "gulp-sourcemaps": "3.0.0",
     "gulp-typescript": "5.0.1",
     "gulp-util": "3.0.5",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "typescript-esbuild": "0.3.1"
+  },
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "type": "module",
+  "private": "false",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
   }
 }

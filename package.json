@@ -1,21 +1,25 @@
 {
   "name": "debugger-for-edge",
   "displayName": "Debugger for Microsoft Edge",
-  "version": "1.0.16",
+  "version": "0.0.1",
   "icon": "images/icon.png",
   "description": "%extension.description%",
   "extensionKind": [
     "ui"
   ],
   "author": {
-    "name": "Microsoft Corporation"
+    "name": "Nikola Hristov",
+    "email": "nikola@nikolahristov.tech",
+    "url": "https://nikolahristov.tech"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-edge-debug2"
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
   },
   "publisher": "msjsdiag",
-  "bugs": "https://github.com/Microsoft/vscode-edge-debug2/issues",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
   "engines": {
     "vscode": "1.17.0"
   },
@@ -25,7 +29,7 @@
   "keywords": [
     "multi-root ready"
   ],
-  "license": "SEE LICENSE IN LICENSE.txt",
+  "license": "MIT",
   "dependencies": {
     "natives": "1.1.6",
     "portscanner": "2.2.0",
@@ -64,7 +68,8 @@
     "vscode-chrome-debug-core-testsupport": "4.1.1",
     "vscode-debugadapter-testsupport": "1.33.0",
     "vscode-debugprotocol": "1.32.0",
-    "vscode-nls-dev": "4.0.4"
+    "vscode-nls-dev": "4.0.4",
+    "typescript-esbuild": "0.3.1"
   },
   "main": "./out/src/extension",
   "activationEvents": [
@@ -88,7 +93,8 @@
     "patch": "npm version patch -m '%s'",
     "minor": "npm version minor -m '%s'",
     "major": "npm version major -m '%s'",
-    "package": "gulp package"
+    "package": "gulp package",
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
   },
   "contributes": {
     "breakpoints": [
@@ -890,5 +896,11 @@
         "when": "debugType == 'edge'"
       }
     ]
+  },
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "type": "module",
+  "private": "false",
+  "publishConfig": {
+    "access": "public"
   }
 }
