@@ -1,19 +1,29 @@
 {
   "name": "testdata-calls-between-merged-files",
   "version": "0.0.1",
+  "private": "false",
   "description": "Test project for vscode-node-debug2 using gulp",
+  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
+  "bugs": {
+    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
+  },
+  "license": "MIT",
   "author": {
     "name": "Nikola Hristov",
     "email": "nikola@nikolahristov.tech",
     "url": "https://nikolahristov.tech"
   },
-  "license": "MIT",
+  "publisher": "playform",
+  "type": "module",
   "scripts": {
     "build": "gulp build",
-    "serve": "http-server -p 7890 .",
-    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts"
+    "prepublishOnly": "TypeScriptESBuild Source/**/*.ts",
+    "serve": "http-server -p 7890 ."
   },
-  
   "devDependencies": {
     "@types/node": "20.8.9",
     "gulp": "4.0.2",
@@ -25,16 +35,6 @@
     "typescript": "5.2.2",
     "typescript-esbuild": "0.3.1"
   },
-  "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-  "bugs": {
-    "url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
-  },
-  "type": "module",
-  "private": "false",
   "publishConfig": {
     "access": "public"
   }
