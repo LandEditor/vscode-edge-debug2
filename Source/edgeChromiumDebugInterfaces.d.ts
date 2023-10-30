@@ -3,11 +3,11 @@
  *--------------------------------------------------------*/
 
 export interface IWebViewConnectionInfo {
-    description: string;
-    faviconUrl: string;
-    id: string;
-    title: string;
-    type: string;
-    url: string;
-    devtoolsActivePort?: string;
+	description: string;
+	faviconUrl: string;
+	id: string;
+	title: string;
+	type: string;
+	url: string;
+	devtoolsActivePort?: string;
 }

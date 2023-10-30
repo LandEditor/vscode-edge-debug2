@@ -1,6 +1,6 @@
 {
-    "compilerOptions": {
-        "outDir": "out",
-        "sourceMap": true
-    }
+	"compilerOptions": {
+		"outDir": "out",
+		"sourceMap": true
+	}
 }
