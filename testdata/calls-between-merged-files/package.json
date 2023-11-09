@@ -1,41 +1,22 @@
 {
-	"name": "testdata-calls-between-merged-files",
-	"version": "0.0.1",
-	"private": "false",
-	"description": "Test project for vscode-node-debug2 using gulp",
-	"homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
-	"bugs": {
-		"url": "https://github.com/CodeEditorLand/CodeEditorLand/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/CodeEditorLand.git"
-	},
-	"license": "MIT",
-	"author": {
-		"name": "Nikola Hristov",
-		"email": "nikola@nikolahristov.tech",
-		"url": "https://nikolahristov.tech"
-	},
-	"publisher": "playform",
-	"type": "module",
-	"scripts": {
-		"build": "gulp build",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"serve": "http-server -p 7890 ."
-	},
-	"devDependencies": {
-		"@types/node": "20.8.9",
-		"gulp": "4.0.2",
-		"gulp-concat": "2.6.1",
-		"gulp-filter": "8.0.0",
-		"gulp-sourcemaps": "3.0.0",
-		"gulp-typescript": "5.0.1",
-		"http-server": "14.1.1",
-		"typescript": "5.2.2",
-		"typescript-esbuild": "0.3.1"
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+  "name": "testdata-calls-between-merged-files",
+  "version": "1.0.0",
+  "description": "Test project for vscode-node-debug2 using gulp",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "build": "gulp build",
+    "serve": "http-server -p 7890 ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^6.0.41",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^4.0.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-typescript": "^3.1.4",
+    "http-server": "^0.9.0",
+    "typescript": "^2.1.4"
+  }
 }

@@ -1,5 +1,5 @@
 function log() {
-	console.log("Very simple webpage");
+    console.log('Very simple webpage');
 }
 
 log();

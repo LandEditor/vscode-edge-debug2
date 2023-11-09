@@ -4,6 +4,6 @@ var a = 1;
 var b = 1;
 fun();
 function fun() {
-	return true;
+    return true;
 }
 //# sourceMappingURL=script.js.map
