@@ -1,7 +1,7 @@
 function f() {
-	console.log("mapped");
+    console.log('mapped');
 }
 
 setInterval(() => {
-	callbackCaller(f);
+    callbackCaller(f);
 }, 0);

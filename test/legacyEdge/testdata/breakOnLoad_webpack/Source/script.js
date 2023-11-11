@@ -5,5 +5,5 @@ var b = 1;
 fun();
 
 function fun() {
-	return true;
+    return true;
 }

@@ -1,5 +1,5 @@
 function debuggerStatement() {
-	debugger;
+    debugger;
 }
 
 setInterval(debuggerStatement, 100);
