@@ -854,7 +854,7 @@
 	"devDependencies": {
 		"@types/mocha": "10.0.4",
 		"@types/mockery": "1.4.33",
-		"@types/node": "20.9.1",
+		"@types/node": "20.9.2",
 		"@types/source-map": "0.5.2",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
