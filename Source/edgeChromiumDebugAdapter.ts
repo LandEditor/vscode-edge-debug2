@@ -101,9 +101,8 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					args.env["WEBVIEW2_USER_DATA_FOLDER"] =
 						args.userDataDir.toString();
 				}
-				args.env[
-					"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"
-				] = `--remote-debugging-port=${args.port}`;
+				args.env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] =
+					`--remote-debugging-port=${args.port}`;
 				args.env["WEBVIEW2_WAIT_FOR_SCRIPT_DEBUGGER"] = "true";
 			}
 
