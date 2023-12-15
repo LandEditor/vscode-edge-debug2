@@ -17,21 +17,21 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			"extension.edge-debug.toggleSkippingFile",
-			toggleSkippingFile
-		)
+			toggleSkippingFile,
+		),
 	);
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			"extension.edge-debug.toggleSmartStep",
-			toggleSmartStep
-		)
+			toggleSmartStep,
+		),
 	);
 
 	context.subscriptions.push(
 		vscode.debug.registerDebugConfigurationProvider(
 			"edge",
-			new EdgeConfigurationProvider()
-		)
+			new EdgeConfigurationProvider(),
+		),
 	);
 }
 
@@ -61,7 +61,7 @@ export class EdgeConfigurationProvider
 
 	provideDebugConfigurations(
 		folder: vscode.WorkspaceFolder | undefined,
-		token?: vscode.CancellationToken
+		token?: vscode.CancellationToken,
 	): vscode.ProviderResult<vscode.DebugConfiguration[]> {
 		if (Core.utils.getPlatform() === Core.utils.Platform.OSX) {
 			return Promise.resolve([DEFAULT_MAC_CONFIG]);
@@ -76,7 +76,7 @@ export class EdgeConfigurationProvider
 	async resolveDebugConfiguration(
 		folder: vscode.WorkspaceFolder | undefined,
 		config: vscode.DebugConfiguration,
-		token?: vscode.CancellationToken
+		token?: vscode.CancellationToken,
 	): Promise<vscode.DebugConfiguration> {
 		// if launch.json is missing or empty
 		if (!config.type && !config.request && !config.name) {
@@ -96,7 +96,7 @@ export class EdgeConfigurationProvider
 		if (config.type === "edge" && !isEdgeDebuggingSupported()) {
 			const errorMessage = localize(
 				"edge.debug.error.versionNotSupported",
-				"Your version of Microsoft Edge does not support debugging via the Edge DevTools Protocol. You can read more about supported versions here (https://aka.ms/edp-docs)."
+				"Your version of Microsoft Edge does not support debugging via the Edge DevTools Protocol. You can read more about supported versions here (https://aka.ms/edp-docs).",
 			);
 			// since we're not passing any user options, we want to return an undefined debug configuration
 			return <Thenable<undefined>>(
@@ -112,7 +112,7 @@ export class EdgeConfigurationProvider
 			const discovery =
 				new Core.chromeTargetDiscoveryStrategy.ChromeTargetDiscovery(
 					nullLogger,
-					nullTelemetryReporter
+					nullTelemetryReporter,
 				);
 
 			let targets;
@@ -123,7 +123,7 @@ export class EdgeConfigurationProvider
 					config.targetTypes === undefined
 						? defaultTargetFilter
 						: getTargetFilter(config.targetTypes),
-					config.url || config.urlFilter
+					config.url || config.urlFilter,
 				);
 			} catch (e) {
 				// Target not running?
@@ -145,7 +145,7 @@ export class EdgeConfigurationProvider
 				.hitVersionEndpoint(
 					config.address || "127.0.0.1",
 					config.port,
-					EdgeConfigurationProvider.ATTACH_TIMEOUT
+					EdgeConfigurationProvider.ATTACH_TIMEOUT,
 				)
 				.then((detectedBrowserProtocol) => {
 					if (
@@ -160,8 +160,8 @@ export class EdgeConfigurationProvider
 					Promise.reject(
 						errors.getNotExistErrorResponse(
 							String(EdgeConfigurationProvider.ATTACH_TIMEOUT),
-							e.message
-						)
+							e.message,
+						),
 					);
 				});
 		}
@@ -181,7 +181,7 @@ function toggleSkippingFile(path: string): void {
 			typeof path === "string" ? { path } : { sourceReference: path };
 		vscode.debug.activeDebugSession.customRequest(
 			"toggleSkipFileStatus",
-			args
+			args,
 		);
 	}
 }
@@ -197,7 +197,7 @@ interface ITargetQuickPickItem extends vscode.QuickPickItem {
 }
 
 async function pickTarget(
-	targets: Core.chromeConnection.ITarget[]
+	targets: Core.chromeConnection.ITarget[],
 ): Promise<ITargetQuickPickItem> {
 	const items = targets.map(
 		(target) =>
@@ -205,7 +205,7 @@ async function pickTarget(
 				label: unescapeTargetTitle(target.title),
 				detail: target.url,
 				websocketDebuggerUrl: target.webSocketDebuggerUrl,
-			}
+			},
 	);
 
 	const placeHolder = localize("edge.targets.placeholder", "Select a tab");

@@ -28,7 +28,7 @@ ChromeDebugSession.run(
 
 		pathTransformer: UrlPathTransformer,
 		sourceMapTransformer: BaseSourceMapTransformer,
-	})
+	}),
 );
 
 /* tslint:disable:no-var-requires */

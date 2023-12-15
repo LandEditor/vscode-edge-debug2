@@ -13,7 +13,7 @@ const localize = nls.loadMessageBundle();
  */
 export function getNotExistErrorResponse(
 	attribute: string,
-	path: string
+	path: string,
 ): Promise<void> {
 	return Promise.reject(
 		new ErrorWithMessage(<DebugProtocol.Message>{
@@ -22,16 +22,16 @@ export function getNotExistErrorResponse(
 				"attribute.path.not.exist",
 				"Attribute '{0}' does not exist ('{1}').",
 				attribute,
-				"{path}"
+				"{path}",
 			),
 			variables: { path },
-		})
+		}),
 	);
 }
 
 export function incorrectFlagMessage(
 	incorrectFlag: string,
-	message: string
+	message: string,
 ): Promise<void> {
 	return Promise.reject(
 		new ErrorWithMessage(<DebugProtocol.Message>{
@@ -40,10 +40,10 @@ export function incorrectFlagMessage(
 				"incorrect.flag.usage",
 				"Flag '{0}' used incorrectly. {1}.",
 				incorrectFlag,
-				message
+				message,
 			),
 			variables: { incorrectFlag },
-		})
+		}),
 	);
 }
 

@@ -2,7 +2,7 @@
   "name": "debugger-for-edge",
   "displayName": "Debugger for Microsoft Edge",
   "version": "0.0.1",
-  "private": "false",
+  "private": false,
   "description": "%extension.description%",
   "homepage": "https://github.com/CodeEditorLand/CodeEditorLand#readme",
   "bugs": {
