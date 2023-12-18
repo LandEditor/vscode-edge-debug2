@@ -27,7 +27,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 	public constructor(
 		objectId: string,
 		private _useRuntimeCallFunctionOnForAllVariables: boolean,
-		evaluateName?: string,
+		evaluateName?: string
 	) {
 		super(objectId, evaluateName);
 
@@ -38,7 +38,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 		adapter: EdgeDebugAdapter,
 		filter?: string,
 		start?: number,
-		count?: number,
+		count?: number
 	): Promise<DebugProtocol.Variable[]> {
 		let vars = await super.expand(adapter, filter, start, count);
 
@@ -48,7 +48,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 			if (extendedVarialbe.msDebuggerPropertyId) {
 				this._childPropertiesMapping.set(
 					variable.name,
-					extendedVarialbe.msDebuggerPropertyId,
+					extendedVarialbe.msDebuggerPropertyId
 				);
 
 				// Also remove the additional field from `variable`, so it will not appear when report to PineZorro/VS Code
@@ -61,7 +61,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 	public async setValue(
 		adapter: EdgeDebugAdapter,
 		name: string,
-		value: string,
+		value: string
 	): Promise<string> {
 		const msDebuggerPropertyId = this._childPropertiesMapping.get(name);
 
@@ -74,8 +74,8 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 				throw coreUtils.errP(
 					localize(
 						"edge.debug.error.msSetDebuggerPropertyValue",
-						"Unable to update the value for this property.",
-					),
+						"Unable to update the value for this property."
+					)
 				);
 			});
 			return value;
@@ -93,8 +93,8 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 				throw coreUtils.errP(
 					localize(
 						"edge.debug.error.msSetDebuggerPropertyValue",
-						"Unable to update the value for this property.",
-					),
+						"Unable to update the value for this property."
+					)
 				);
 			});
 

@@ -13,7 +13,7 @@ const localize = nls.loadMessageBundle();
  */
 export function getNotExistErrorResponse(
 	attribute: string,
-	path: string,
+	path: string
 ): Promise<void> {
 	return Promise.reject(
 		new chromeDebugErrors.ErrorWithMessage(<DebugProtocol.Message>{
@@ -22,10 +22,10 @@ export function getNotExistErrorResponse(
 				"attribute.path.not.exist",
 				"Attribute '{0}' does not exist ('{1}').",
 				attribute,
-				"{path}",
+				"{path}"
 			),
 			variables: { path },
-		}),
+		})
 	);
 }
 

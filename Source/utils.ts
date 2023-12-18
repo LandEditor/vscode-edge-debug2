@@ -22,7 +22,7 @@ const WINx86_STABLE_PATHS: IWindowsMSEdgePaths = {
 		"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
 	WINx86_USERPATH: path.join(
 		WIN_APPDATA,
-		"Microsoft\\Edge\\Application\\msedge.exe",
+		"Microsoft\\Edge\\Application\\msedge.exe"
 	),
 };
 
@@ -31,7 +31,7 @@ const WINx86_BETA_PATHS: IWindowsMSEdgePaths = {
 		"C:\\Program Files (x86)\\Microsoft\\Edge Beta\\Application\\msedge.exe",
 	WINx86_USERPATH: path.join(
 		WIN_APPDATA,
-		"Microsoft\\Edge Beta\\Application\\msedge.exe",
+		"Microsoft\\Edge Beta\\Application\\msedge.exe"
 	),
 };
 
@@ -40,7 +40,7 @@ const WINx86_DEV_PATHS: IWindowsMSEdgePaths = {
 		"C:\\Program Files (x86)\\Microsoft\\Edge Dev\\Application\\msedge.exe",
 	WINx86_USERPATH: path.join(
 		WIN_APPDATA,
-		"Microsoft\\Edge Dev\\Application\\msedge.exe",
+		"Microsoft\\Edge Dev\\Application\\msedge.exe"
 	),
 };
 
@@ -49,7 +49,7 @@ const WINx86_CANARY_PATHS: IWindowsMSEdgePaths = {
 		"C:\\Program Files (x86)\\Microsoft\\Edge SxS\\Application\\msedge.exe",
 	WINx86_USERPATH: path.join(
 		WIN_APPDATA,
-		"Microsoft\\Edge SxS\\Application\\msedge.exe",
+		"Microsoft\\Edge SxS\\Application\\msedge.exe"
 	),
 };
 
@@ -160,7 +160,7 @@ export class DebounceHelper {
 }
 
 export const getTargetFilter = (
-	targetTypes?: string[],
+	targetTypes?: string[]
 ): chromeConnection.ITargetFilter => {
 	if (targetTypes) {
 		return (target) =>

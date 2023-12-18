@@ -44,7 +44,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 	public async launch(
 		args: ILaunchRequestArgs,
 		telemetryPropertyCollector: ITelemetryPropertyCollector,
-		seq?: number,
+		seq?: number
 	) {
 		let attachToWebView = false;
 
@@ -57,7 +57,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				// Users must specify the host application via runtimeExecutable when using webview
 				return errors.incorrectFlagMessage(
 					"runtimeExecutable",
-					"Must be set when using 'useWebView'",
+					"Must be set when using 'useWebView'"
 				);
 			}
 
@@ -65,7 +65,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				args.useWebView === "advanced" ? "advanced" : "true";
 			telemetryPropertyCollector.addTelemetryProperty(
 				"useWebView",
-				webViewTelemetry,
+				webViewTelemetry
 			);
 			this._isDebuggerUsingWebView = true;
 
@@ -89,7 +89,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 						// Also override the userDataDir to force remote debugging to be enabled
 						args.userDataDir = path.join(
 							os.tmpdir(),
-							`vscode-edge-debug-userdatadir_${args.port}`,
+							`vscode-edge-debug-userdatadir_${args.port}`
 						);
 					}
 					this._webViewCreatedCallback(args.port);
@@ -101,9 +101,8 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					args.env["WEBVIEW2_USER_DATA_FOLDER"] =
 						args.userDataDir.toString();
 				}
-				args.env[
-					"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"
-				] = `--remote-debugging-port=${args.port}`;
+				args.env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] =
+					`--remote-debugging-port=${args.port}`;
 				args.env["WEBVIEW2_WAIT_FOR_SCRIPT_DEBUGGER"] = "true";
 			}
 
@@ -116,7 +115,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 		const chromeKilledCallback = () =>
 			this.terminateSession(
-				"WebView program ended before the debugger could connect",
+				"WebView program ended before the debugger could connect"
 			);
 		if (this._chromeProc) {
 			this._chromeProc.on("exit", chromeKilledCallback);
@@ -135,12 +134,12 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					args.address,
 					args.timeout,
 					undefined,
-					args.extraCRDPChannelPort,
+					args.extraCRDPChannelPort
 				);
 				if (this._chromeProc) {
 					this._chromeProc.removeListener(
 						"exit",
-						chromeKilledCallback,
+						chromeKilledCallback
 					);
 				}
 			}
@@ -162,7 +161,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		address?: string,
 		timeout?: number,
 		websocketUrl?: string,
-		extraCRDPChannelPort?: number,
+		extraCRDPChannelPort?: number
 	) {
 		await super.doAttach(
 			port,
@@ -170,7 +169,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 			address,
 			timeout,
 			websocketUrl,
-			extraCRDPChannelPort,
+			extraCRDPChannelPort
 		);
 
 		if (this._isDebuggerUsingWebView) {
@@ -209,7 +208,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 	private getWebViewPort(
 		args: ILaunchRequestArgs,
-		connectionInfo: IWebViewConnectionInfo,
+		connectionInfo: IWebViewConnectionInfo
 	) {
 		let port = 0;
 		if (args.port === 0 && connectionInfo.devtoolsActivePort) {
@@ -227,14 +226,14 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 	private isMatchingWebViewTarget(
 		connectionInfo: IWebViewConnectionInfo,
-		targetUrl: string,
+		targetUrl: string
 	) {
 		const webViewTarget = [
 			{ url: connectionInfo.url } as chromeConnection.ITarget,
 		];
 		const targets = chromeUtils.getMatchingTargets(
 			webViewTarget,
-			targetUrl,
+			targetUrl
 		);
 		return targets && targets.length > 0;
 	}
@@ -244,7 +243,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		if (this._debugActive) {
 			// can only support one debug channel at a time, so just return
 			logger.verbose(
-				"createWebViewServer: Called when debug already active",
+				"createWebViewServer: Called when debug already active"
 			);
 
 			return;
@@ -263,7 +262,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 			stream.on("data", async (data) => {
 				logger.verbose("new webview");
 				const connectionInfo: IWebViewConnectionInfo = JSON.parse(
-					data.toString(),
+					data.toString()
 				);
 				const port = this.getWebViewPort(args, connectionInfo);
 
@@ -285,7 +284,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 				// Get navigation events so we can watch for the target URL
 				webViewConnection.api.Page.on("frameNavigated", (event) =>
-					this._onFrameNavigated(event),
+					this._onFrameNavigated(event)
 				);
 				webViewConnection.api.Page.enable(); // if you don't enable you won't get the frameNavigated events
 
@@ -323,7 +322,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 	}
 
 	private async _onFrameNavigated(
-		framePayload: Crdp.Page.FrameNavigatedEvent,
+		framePayload: Crdp.Page.FrameNavigatedEvent
 	) {
 		logger.verbose("onFrameNavigated");
 
@@ -337,12 +336,12 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				"checking for matching target: " +
 					webViewTarget[0].url +
 					" <=> " +
-					this._targetUrl,
+					this._targetUrl
 			);
 
 			const targets = chromeUtils.getMatchingTargets(
 				webViewTarget,
-				this._targetUrl,
+				this._targetUrl
 			);
 			if (targets && targets.length > 0) {
 				logger.verbose("found web target matching filter");
@@ -353,7 +352,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 						// Found it
 						// Let the webview created callback know what port to start debugging on
 						this._webViewCreatedCallback(
-							this._connections[key].port,
+							this._connections[key].port
 						);
 						this._debugActive = true;
 					}

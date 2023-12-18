@@ -78,7 +78,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	private _edgeProtocolVersion: Version;
 
 	public initialize(
-		args: DebugProtocol.InitializeRequestArguments,
+		args: DebugProtocol.InitializeRequestArguments
 	): DebugProtocol.Capabilities {
 		const capabilities = super.initialize(args);
 		capabilities.supportsRestartRequest = true;
@@ -92,7 +92,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	private async _checkPortOccupiedByEDP(
 		address: string,
-		port: number,
+		port: number
 	): Promise<void> {
 		// See if EDP is using the port, if that's the case we can still launch
 		// We see if we can hit /json/version endpoint to verify if EDP is running on the port
@@ -105,30 +105,30 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				// This means /json/version is not available. So the port is being used by another process.
 				// Error out in this case.
 				logger.log(
-					`There was an error connecting to ${url} : ${e.message}`,
+					`There was an error connecting to ${url} : ${e.message}`
 				);
 				telemetry.telemetry.reportEvent(
 					"portOccupiedByAnotherProcess",
-					port,
+					port
 				);
 				return coreUtils.errP(
 					localize(
 						"edge.port.occupied",
 						"Cannot launch Edge. The specified debugging port {0} is in use by another process. To continue debugging please make sure no process is running on the port.",
-						port,
-					),
+						port
+					)
 				);
 			});
 
 		// If we reach here that means EDP is running on the port, so we can continue
 		logger.log(
-			`Port ${port} is already being used by EDP. Proceeding with the launch.`,
+			`Port ${port} is already being used by EDP. Proceeding with the launch.`
 		);
 	}
 
 	private async _checkPortOccupied(
 		address = "127.0.0.1",
-		port: number,
+		port: number
 	): Promise<void> {
 		return portscanner.checkPortStatus(port, address).then(
 			(status) => {
@@ -140,13 +140,13 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			},
 			(err) => {
 				logger.log(
-					`There was an error trying to verify port usage: ${err}`,
+					`There was an error trying to verify port usage: ${err}`
 				);
 				telemetry.telemetry.reportEvent(
 					"errorCheckingDebuggingPortOccupiedByAnotherProcess",
-					err,
+					err
 				);
-			},
+			}
 		);
 	}
 
@@ -164,7 +164,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				if (!re) {
 					return errors.getNotExistErrorResponse(
 						"runtimeExecutable",
-						args.runtimeExecutable,
+						args.runtimeExecutable
 					);
 				}
 
@@ -176,8 +176,8 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				return coreUtils.errP(
 					localize(
 						"attribute.edge.missing",
-						'Can\'t find Microsoft Edge - install it or set the "runtimeExecutable" field in the launch config.',
-					),
+						'Can\'t find Microsoft Edge - install it or set the "runtimeExecutable" field in the launch config.'
+					)
 				);
 			}
 
@@ -206,10 +206,10 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				/* So when this script is getting executed from the %programdata% directory under EdgeAdapter/out/src, we need to find the
                 landingPage under EdgeAdapter/ hence we need to go 2 directories up */
 				let landingPagePath = path.dirname(
-					path.dirname(path.dirname(__dirname)),
+					path.dirname(path.dirname(__dirname))
 				);
 				launchUrl = encodeURI(
-					"file:///" + landingPagePath + "/landingPage.html",
+					"file:///" + landingPagePath + "/landingPage.html"
 				);
 				this._breakOnLoadActive = true;
 
@@ -221,7 +221,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				edgeArgs,
 				edgeEnv,
 				edgeWorkingDir,
-				!!args.runtimeExecutable,
+				!!args.runtimeExecutable
 			);
 			this._edgeProc.on("error", (err) => {
 				const errMsg = "Chrome error: " + err;
@@ -237,8 +237,8 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						args.address,
 						args.timeout,
 						undefined,
-						args.extraCRDPChannelPort,
-				  ).then(() => {
+						args.extraCRDPChannelPort
+					).then(() => {
 						this._scriptParsedEventBookKeeping = {};
 						this._debugProxyPort = port;
 
@@ -249,14 +249,14 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 							throw coreUtils.errP(
 								localize(
 									"edge.debug.error.notattached",
-									"Debugging connection is not attached after the attaching process.",
-								),
+									"Debugging connection is not attached after the attaching process."
+								)
 							);
 						}
 
 						this._debuggerId =
 							this._chromeConnection.attachedTarget.id;
-				  });
+					});
 		});
 	}
 
@@ -279,7 +279,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	}
 
 	protected async onScriptParsed(
-		script: Crdp.Debugger.ScriptParsedEvent,
+		script: Crdp.Debugger.ScriptParsedEvent
 	): Promise<void> {
 		await super.onScriptParsed(script);
 
@@ -301,7 +301,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			typeof args.sourceMaps === "undefined" || args.sourceMaps;
 		args.sourceMapPathOverrides = getSourceMapPathOverrides(
 			args.webRoot,
-			args.sourceMapPathOverrides,
+			args.sourceMapPathOverrides
 		);
 		args.skipFileRegExps = ["^chrome-extension:.*"];
 
@@ -323,7 +323,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		address?: string,
 		timeout?: number,
 		websocketUrl?: string,
-		extraCRDPChannelPort?: number,
+		extraCRDPChannelPort?: number
 	): Promise<void> {
 		return super
 			.doAttach(
@@ -332,7 +332,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				address,
 				timeout,
 				websocketUrl,
-				extraCRDPChannelPort,
+				extraCRDPChannelPort
 			)
 			.then(async () => {
 				// Don't return this promise, a failure shouldn't fail attach
@@ -343,7 +343,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				userAgentPromise.then(
 					(userAgent) => logger.log("Target userAgent: " + userAgent),
 					(err) =>
-						logger.log("Getting userAgent failed: " + err.message),
+						logger.log("Getting userAgent failed: " + err.message)
 				);
 
 				const userAgentForTelemetryPromise = userAgentPromise.then(
@@ -352,30 +352,30 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 							"Versions.Target.UserAgent": userAgent,
 						};
 						const edgeVersionMatch = userAgent.match(
-							/Edge\/([0-9]+(?:.[0-9]+)+)/,
+							/Edge\/([0-9]+(?:.[0-9]+)+)/
 						);
 						if (edgeVersionMatch && edgeVersionMatch[1]) {
 							properties["Versions.Target.Version"] =
 								edgeVersionMatch[1];
 						}
 						return properties;
-					},
+					}
 				);
 
 				const protocolVersionPromise =
 					this._chromeConnection.api.Schema.getDomains().then(
 						(allDomainsResponse) => {
 							return allDomainsResponse.domains.filter(
-								(domain) => domain.name === "Debugger",
+								(domain) => domain.name === "Debugger"
 							);
 						},
 						(err) => {
 							logger.log(
 								"Error trying to use EDP api for protocol version " +
-									err.message,
+									err.message
 							);
 							return [];
-						},
+						}
 					);
 
 				let protocolVersion = await protocolVersionPromise;
@@ -387,13 +387,13 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				userAgentForTelemetryPromise.then((versionInformation) =>
 					telemetry.telemetry.reportEvent(
 						"target-version",
-						versionInformation,
-					),
+						versionInformation
+					)
 				);
 
 				// Add version information to all telemetry events from now on
 				telemetry.telemetry.addCustomGlobalProperty(
-					userAgentForTelemetryPromise,
+					userAgentForTelemetryPromise
 				);
 			});
 	}
@@ -404,7 +404,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	protected async onPaused(
 		notification: Crdp.Debugger.PausedEvent,
-		expectingStopReason = this._expectingStopReason,
+		expectingStopReason = this._expectingStopReason
 	): Promise<IOnPausedResult> {
 		return super.onPaused(notification, expectingStopReason);
 	}
@@ -428,8 +428,8 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				throw coreUtils.errP(
 					localize(
 						"edge.debug.error.nodebuggerID",
-						"Cannot find a debugger id.",
-					),
+						"Cannot find a debugger id."
+					)
 				);
 			}
 
@@ -440,9 +440,9 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				},
 				(e) => {
 					logger.log(
-						`Cannot call close API, ${require("util").inspect(e)}`,
+						`Cannot call close API, ${require("util").inspect(e)}`
 					);
-				},
+				}
 			);
 		}
 	}
@@ -457,7 +457,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	}
 
 	public async variables(
-		args: DebugProtocol.VariablesArguments,
+		args: DebugProtocol.VariablesArguments
 	): Promise<IVariablesResponseBody> {
 		let variablesResponse = await super.variables(args);
 		let filteredVariables: DebugProtocol.Variable[] = [];
@@ -494,7 +494,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	// temporary work around for edge
 	public async evaluate(
-		args: DebugProtocol.EvaluateArguments,
+		args: DebugProtocol.EvaluateArguments
 	): Promise<IEvaluateResponseBody> {
 		return super.evaluate(args).then((evalResponseBody) => {
 			if (
@@ -512,8 +512,8 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	private async sendBackloggedLoadedSourceEvents(): Promise<void> {
 		await Promise.all(
 			this._unsentLoadedSourceEvents.map((event) =>
-				this.sendLoadedSourceEvent(event[0], event[1]),
-			),
+				this.sendLoadedSourceEvent(event[0], event[1])
+			)
 		);
 		this._unsentLoadedSourceEvents = [];
 	}
@@ -533,7 +533,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	protected async sendLoadedSourceEvent(
 		script: Crdp.Debugger.ScriptParsedEvent,
-		reason: LoadedSourceEventReason = null,
+		reason: LoadedSourceEventReason = null
 	): Promise<void> {
 		// If navigation is in progress, we wait for it to complete before sending any new script loaded events
 		// This is done because in case of quick refreshes, we end up sending 'changed' events for new scripts because
@@ -559,7 +559,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		edgeArgs: string[],
 		env: { [key: string]: string },
 		cwd: string,
-		usingRuntimeExecutable: boolean,
+		usingRuntimeExecutable: boolean
 	): ChildProcess {
 		this.events.emitStepStarted("LaunchTarget.LaunchExe");
 		if (
@@ -582,7 +582,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			const edgeProc = fork(
 				getEdgeSpawnHelperPath(),
 				[edgePath, ...edgeArgs],
-				options,
+				options
 			);
 			edgeProc.unref();
 
@@ -631,7 +631,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		name: string,
 		object: Crdp.Runtime.RemoteObject,
 		parentEvaluateName?: string,
-		stringify?: boolean,
+		stringify?: boolean
 	): DebugProtocol.Variable {
 		let variable: ExtendedDebugProtocolVariable =
 			super.createPrimitiveVariable(name, object, parentEvaluateName);
@@ -646,7 +646,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	protected createPropertyContainer(
 		object: Crdp.Runtime.RemoteObject,
-		evaluateName: string,
+		evaluateName: string
 	): variables.IVariableContainer {
 		/**
 		 * For EDP version 0.1 (RS4) Debugger.msSetDebuggerPropertyValue should be used for variables with msDebuggerPropertyId because Runtime.callFunctionOn will not work.
@@ -657,26 +657,26 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		return new MSPropertyContainer(
 			object.objectId,
 			useRuntimeCallFunctionOnForAllVariables,
-			evaluateName,
+			evaluateName
 		);
 	}
 }
 
 function getSourceMapPathOverrides(
 	webRoot: string,
-	sourceMapPathOverrides?: ISourceMapPathOverrides,
+	sourceMapPathOverrides?: ISourceMapPathOverrides
 ): ISourceMapPathOverrides {
 	return sourceMapPathOverrides
 		? resolveWebRootPattern(
 				webRoot,
 				sourceMapPathOverrides,
-				/*warnOnMissing=*/ true,
-		  )
+				/*warnOnMissing=*/ true
+			)
 		: resolveWebRootPattern(
 				webRoot,
 				DefaultWebSourceMapPathOverrides,
-				/*warnOnMissing=*/ false,
-		  );
+				/*warnOnMissing=*/ false
+			);
 }
 
 /**
@@ -687,19 +687,19 @@ function getSourceMapPathOverrides(
 export function resolveWebRootPattern(
 	webRoot: string,
 	sourceMapPathOverrides: ISourceMapPathOverrides,
-	warnOnMissing: boolean,
+	warnOnMissing: boolean
 ): ISourceMapPathOverrides {
 	const resolvedOverrides: ISourceMapPathOverrides = {};
 	for (let pattern in sourceMapPathOverrides) {
 		const replacePattern = replaceWebRootInSourceMapPathOverridesEntry(
 			webRoot,
 			pattern,
-			warnOnMissing,
+			warnOnMissing
 		);
 		const replacePatternValue = replaceWebRootInSourceMapPathOverridesEntry(
 			webRoot,
 			sourceMapPathOverrides[pattern],
-			warnOnMissing,
+			warnOnMissing
 		);
 
 		resolvedOverrides[replacePattern] = replacePatternValue;
@@ -711,7 +711,7 @@ export function resolveWebRootPattern(
 function replaceWebRootInSourceMapPathOverridesEntry(
 	webRoot: string,
 	entry: string,
-	warnOnMissing: boolean,
+	warnOnMissing: boolean
 ): string {
 	const webRootIndex = entry.indexOf("${webRoot}");
 	if (webRootIndex === 0) {
@@ -719,12 +719,12 @@ function replaceWebRootInSourceMapPathOverridesEntry(
 			return entry.replace("${webRoot}", webRoot);
 		} else if (warnOnMissing) {
 			logger.log(
-				"Warning: sourceMapPathOverrides entry contains ${webRoot}, but webRoot is not set",
+				"Warning: sourceMapPathOverrides entry contains ${webRoot}, but webRoot is not set"
 			);
 		}
 	} else if (webRootIndex > 0) {
 		logger.log(
-			"Warning: in a sourceMapPathOverrides entry, ${webRoot} is only valid at the beginning of the path",
+			"Warning: in a sourceMapPathOverrides entry, ${webRoot} is only valid at the beginning of the path"
 		);
 	}
 
