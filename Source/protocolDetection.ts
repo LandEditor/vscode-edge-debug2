@@ -1,7 +1,5 @@
-"use strict";
-
-import { Logger } from "vscode-debugadapter";
 import { utils } from "vscode-chrome-debug-core";
+import { Logger } from "vscode-debugadapter";
 
 export class ProtocolDetection {
 	private logger: Logger.ILogger;
@@ -13,11 +11,11 @@ export class ProtocolDetection {
 	public async hitVersionEndpoint(
 		address: string,
 		port: number,
-		timeout: number
+		timeout: number,
 	): Promise<string> {
 		const url = `http://${address}:${port}/json/version`;
 		this.logger.log(
-			`Getting browser and debug protocol version via ${url}`
+			`Getting browser and debug protocol version via ${url}`,
 		);
 
 		return utils
@@ -27,12 +25,12 @@ export class ProtocolDetection {
 						.getURL(url, { headers: { Host: "localhost" } })
 						.catch((e) =>
 							this.logger.log(
-								`There was an error connecting to ${url} : ${e.message}`
-							)
+								`There was an error connecting to ${url} : ${e.message}`,
+							),
 						);
 				},
 				timeout,
-				/*intervalDelay=*/ 100
+				/*intervalDelay=*/ 100,
 			)
 			.then((jsonResponse) => {
 				return JSON.parse(jsonResponse);

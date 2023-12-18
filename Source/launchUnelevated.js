@@ -31,7 +31,7 @@ if (objShellWindows != null) {
 			/*pvarLocRoot=NULL*/ 0,
 			/*SWC_DESKTOP*/ 8,
 			/*phwnd=NULL*/ 0,
-			/*SWFO_NEEDDISPATCH*/ 1
+			/*SWFO_NEEDDISPATCH*/ 1,
 		);
 		item.Document.Application.ShellExecute(command, params);
 	}

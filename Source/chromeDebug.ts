@@ -2,15 +2,15 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import * as os from "os";
+import * as path from "path";
 import {
-	ChromeDebugSession,
-	logger,
-	UrlPathTransformer,
 	BaseSourceMapTransformer,
+	ChromeDebugSession,
+	UrlPathTransformer,
+	logger,
 	telemetry,
 } from "vscode-chrome-debug-core";
-import * as path from "path";
-import * as os from "os";
 import { defaultTargetFilter } from "./utils";
 
 import { ChromeDebugAdapter } from "./chromeDebugAdapter";
@@ -28,7 +28,7 @@ ChromeDebugSession.run(
 
 		pathTransformer: UrlPathTransformer,
 		sourceMapTransformer: BaseSourceMapTransformer,
-	})
+	}),
 );
 
 /* tslint:disable:no-var-requires */
