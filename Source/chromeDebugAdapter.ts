@@ -75,7 +75,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 		}
 
 		this._doesHostSupportLaunchUnelevatedProcessRequest =
-			args.supportsLaunchUnelevatedProcessRequest || false;
+			args.supportsLaunchUnelevatedProcessRequest;
 
 		return capabilities;
 	}
@@ -144,8 +144,8 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 				args.env || null;
 			const chromeWorkingDir: string = args.cwd || null;
 
-			if (!args.useWebView && !args.noDebug) {
-				chromeArgs.push("--remote-debugging-port=" + port);
+			if (!(args.useWebView || args.noDebug)) {
+				chromeArgs.push(`--remote-debugging-port=${port}`);
 			}
 
 			// Also start with extra stuff disabled
@@ -182,7 +182,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			}
 
 			if (!args.useWebView && args.userDataDir) {
-				chromeArgs.push("--user-data-dir=" + args.userDataDir);
+				chromeArgs.push(`--user-data-dir=${args.userDataDir}`);
 			}
 
 			if (args._clientOverlayPausedMessage) {
@@ -217,7 +217,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			);
 			if (this._chromeProc) {
 				this._chromeProc.on("error", (err) => {
-					const errMsg = "Edge error: " + err;
+					const errMsg = `Edge error: ${err}`;
 					logger.error(errMsg);
 					this.terminateSession(errMsg);
 				});
@@ -310,7 +310,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 	}
 
 	public commonArgs(args: ICommonRequestArgs): void {
-		if (args.webRoot && (!args.pathMapping || !args.pathMapping["/"])) {
+		if (args.webRoot && !args.pathMapping?.["/"]) {
 			args.pathMapping = args.pathMapping || {};
 			args.pathMapping["/"] = args.webRoot;
 		}
@@ -363,12 +363,11 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 					.then(
 						(evalResponse) =>
 							logger.log(
-								"Target userAgent: " +
-									evalResponse.result.value,
+								`Target userAgent: ${evalResponse.result.value}`,
 							),
 						(err) =>
 							logger.log(
-								"Getting userAgent failed: " + err.message,
+								`Getting userAgent failed: ${err.message}`,
 							),
 					)
 					.then(() => {
@@ -414,7 +413,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 						},
 						(err) => {
 							logger.log(
-								"Getting userAgent failed: " + err.message,
+								`Getting userAgent failed: ${err.message}`,
 							);
 							const properties = {
 								"Versions.Target.NoUserAgentReason":
@@ -461,7 +460,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 						if (!browserVersion.isAtLeastVersion(0, 1)) {
 							// If this is true it means it's unknown version
 							logger.log(
-								`/json/version failed, attempting workaround to get the version`,
+								"/json/version failed, attempting workaround to get the version",
 							);
 							// If the original way failed, we try to use versionInformationPromise to get this information
 							const versionInformation =
@@ -671,21 +670,21 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
 			chromeProc.on("message", (data) => {
 				const pidStr = data.toString();
-				logger.log("got Edge PID: " + pidStr);
+				logger.log(`got Edge PID: ${pidStr}`);
 				this._chromePID = parseInt(pidStr, 10);
 			});
 
 			chromeProc.on("error", (err) => {
-				const errMsg = "chromeSpawnHelper error: " + err;
+				const errMsg = `chromeSpawnHelper error: ${err}`;
 				logger.error(errMsg);
 			});
 
 			chromeProc.stderr.on("data", (data) => {
-				logger.error("[chromeSpawnHelper] " + data.toString());
+				logger.error(`[chromeSpawnHelper] ${data.toString()}`);
 			});
 
 			chromeProc.stdout.on("data", (data) => {
-				logger.log("[chromeSpawnHelper] " + data.toString());
+				logger.log(`[chromeSpawnHelper] ${data.toString()}`);
 			});
 
 			return chromeProc;
@@ -938,7 +937,7 @@ async function findNewlyLaunchedChromeProcess(
 		});
 	}
 
-	const error = new Error(`Cannot acquire Edge process id`);
+	const error = new Error("Cannot acquire Edge process id");
 	const telemetryProperties: any = {
 		semaphoreFileContent: lastAccessFileContent,
 	};

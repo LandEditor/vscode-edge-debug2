@@ -33,7 +33,7 @@ ChromeDebugSession.run(
 
 /* tslint:disable:no-var-requires */
 const debugAdapterVersion = require("../../package.json").version;
-logger.log(EXTENSION_NAME + ": " + debugAdapterVersion);
+logger.log(`${EXTENSION_NAME}: ${debugAdapterVersion}`);
 
 /* __GDPR__FRAGMENT__
     "DebugCommonProperties" : {

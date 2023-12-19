@@ -44,7 +44,7 @@ const lintSources = [
 	"test",
 	"!test/legacyEdge/testapp",
 	"!test/legacyEdge/testdata",
-].map((tsFolder) => tsFolder + "/**/*.ts");
+].map((tsFolder) => `${tsFolder}/**/*.ts`);
 
 const tsProject = ts.createProject("tsconfig.json", { typescript });
 function doBuild(buildNls, failOnError) {
@@ -134,7 +134,7 @@ function verifyNotALinkedModule(modulePath) {
 	return new Promise((resolve, reject) => {
 		fs.lstat(modulePath, (err, stat) => {
 			if (stat.isSymbolicLink()) {
-				reject(new Error("Symbolic link found: " + modulePath));
+				reject(new Error(`Symbolic link found: ${modulePath}`));
 			} else {
 				resolve();
 			}

@@ -65,7 +65,7 @@ export class EdgeConfigurationProvider
 		}
 
 		// if launch.json is missing or empty
-		if (!config.type && !config.request && !config.name) {
+		if (!(config.type || config.request || config.name)) {
 			// Return null so it will create a launch.json and fall back on provideDebugConfigurations - better to point the user towards the config
 			// than try to work automagically.
 			return null;
@@ -108,7 +108,7 @@ export class EdgeConfigurationProvider
 function toggleSkippingFile(path: string): void {
 	if (!path) {
 		const activeEditor = vscode.window.activeTextEditor;
-		path = activeEditor && activeEditor.document.fileName;
+		path = activeEditor?.document.fileName;
 	}
 
 	const args: Core.IToggleSkipFileStatusArgs =

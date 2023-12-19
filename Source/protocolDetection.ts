@@ -38,10 +38,7 @@ export class ProtocolDetection {
 	}
 
 	public extractBrowserProtocol(detectedBrowserJsonVersion: any): string {
-		if (
-			!detectedBrowserJsonVersion ||
-			!detectedBrowserJsonVersion.Browser
-		) {
+		if (!detectedBrowserJsonVersion?.Browser) {
 			return null;
 		}
 

@@ -34,7 +34,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 	private _targetUrl: string;
 
-	private _connections: Array<ConnectionInfo> = [];
+	private _connections: ConnectionInfo[] = [];
 
 	private _debugActive = false;
 
@@ -215,7 +215,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 			const lines = connectionInfo.devtoolsActivePort.split("\n");
 			if (lines.length > 0) {
 				const filePort = parseInt(lines[0], 10);
-				port = isNaN(filePort) ? args.port : filePort;
+				port = Number.isNaN(filePort) ? args.port : filePort;
 			}
 		} else {
 			port = args.port;
@@ -269,7 +269,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				// Setup the navigation events on the new webview so we can use it to filter for our target URL
 				const address = args.address || "127.0.0.1";
 				const webSocketUrl = `ws://${address}:${port}/devtools/${connectionInfo.type}/${connectionInfo.id}`;
-				logger.verbose("new webview: " + webSocketUrl);
+				logger.verbose(`new webview: ${webSocketUrl}`);
 
 				// keep the list of connections so we can lookup the port to debug on and clean up later
 				const webViewConnection =
@@ -329,14 +329,11 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		if (framePayload !== undefined) {
 			const url = framePayload.frame.url;
 			const id = framePayload.frame.id;
-			logger.verbose("onFrameNavigated: " + url);
+			logger.verbose(`onFrameNavigated: ${url}`);
 
 			const webViewTarget = [{ url: url } as chromeConnection.ITarget];
 			logger.verbose(
-				"checking for matching target: " +
-					webViewTarget[0].url +
-					" <=> " +
-					this._targetUrl,
+				`checking for matching target: ${webViewTarget[0].url} <=> ${this._targetUrl}`,
 			);
 
 			const targets = chromeUtils.getMatchingTargets(

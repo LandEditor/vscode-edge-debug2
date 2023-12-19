@@ -122,10 +122,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		);
 	}
 
-	private async _checkPortOccupied(
-		address = "127.0.0.1",
-		port: number,
-	): Promise<void> {
+	private async _checkPortOccupied(address, port: number): Promise<void> {
 		return portscanner.checkPortStatus(port, address).then(
 			(status) => {
 				logger.log(`Port ${port} status is: ` + status);
@@ -205,7 +202,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					path.dirname(path.dirname(__dirname)),
 				);
 				launchUrl = encodeURI(
-					"file:///" + landingPagePath + "/landingPage.html",
+					`file:///${landingPagePath}/landingPage.html`,
 				);
 				this._breakOnLoadActive = true;
 
@@ -220,7 +217,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				!!args.runtimeExecutable,
 			);
 			this._edgeProc.on("error", (err) => {
-				const errMsg = "Chrome error: " + err;
+				const errMsg = `Chrome error: ${err}`;
 				logger.error(errMsg);
 				this.terminateSession(errMsg);
 			});
@@ -239,8 +236,10 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						this._debugProxyPort = port;
 
 						if (
-							!this._chromeConnection.isAttached ||
-							!this._chromeConnection.attachedTarget
+							!(
+								this._chromeConnection.isAttached &&
+								this._chromeConnection.attachedTarget
+							)
 						) {
 							throw coreUtils.errP(
 								localize(
@@ -288,7 +287,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	}
 
 	public commonArgs(args: ICommonRequestArgs): void {
-		if (args.webRoot && (!args.pathMapping || !args.pathMapping["/"])) {
+		if (args.webRoot && !args.pathMapping?.["/"]) {
 			args.pathMapping = args.pathMapping || {};
 			args.pathMapping["/"] = args.webRoot;
 		}
@@ -337,9 +336,9 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					silent: true,
 				}).then((evalResponse) => evalResponse.result.value);
 				userAgentPromise.then(
-					(userAgent) => logger.log("Target userAgent: " + userAgent),
+					(userAgent) => logger.log(`Target userAgent: ${userAgent}`),
 					(err) =>
-						logger.log("Getting userAgent failed: " + err.message),
+						logger.log(`Getting userAgent failed: ${err.message}`),
 				);
 
 				const userAgentForTelemetryPromise = userAgentPromise.then(
@@ -350,7 +349,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						const edgeVersionMatch = userAgent.match(
 							/Edge\/([0-9]+(?:.[0-9]+)+)/,
 						);
-						if (edgeVersionMatch && edgeVersionMatch[1]) {
+						if (edgeVersionMatch?.[1]) {
 							properties["Versions.Target.Version"] =
 								edgeVersionMatch[1];
 						}
@@ -367,8 +366,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						},
 						(err) => {
 							logger.log(
-								"Error trying to use EDP api for protocol version " +
-									err.message,
+								`Error trying to use EDP api for protocol version ${err.message}`,
 							);
 							return [];
 						},
@@ -584,21 +582,21 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 			edgeProc.on("message", (data) => {
 				const pidStr = data.toString();
-				logger.log("got edge PID: " + pidStr);
+				logger.log(`got edge PID: ${pidStr}`);
 				this._edgePID = parseInt(pidStr, 10);
 			});
 
 			edgeProc.on("error", (err) => {
-				const errMsg = "edgeSpawnHelper error: " + err;
+				const errMsg = `edgeSpawnHelper error: ${err}`;
 				logger.error(errMsg);
 			});
 
 			edgeProc.stderr.on("data", (data) => {
-				logger.error("[edgeSpawnHelper] " + data.toString());
+				logger.error(`[edgeSpawnHelper] ${data.toString()}`);
 			});
 
 			edgeProc.stdout.on("data", (data) => {
-				logger.log("[edgeSpawnHelper] " + data.toString());
+				logger.log(`[edgeSpawnHelper] ${data.toString()}`);
 			});
 
 			return edgeProc;

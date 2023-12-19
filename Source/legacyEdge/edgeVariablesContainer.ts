@@ -47,7 +47,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 				);
 
 				// Also remove the additional field from `variable`, so it will not appear when report to PineZorro/VS Code
-				delete extendedVarialbe.msDebuggerPropertyId;
+				extendedVarialbe.msDebuggerPropertyId = undefined;
 			}
 		}
 		return vars;
