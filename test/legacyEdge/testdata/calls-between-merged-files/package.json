@@ -33,7 +33,7 @@
 		"gulp-typescript": "^3.1.4",
 		"http-server": "^0.9.0",
 		"typescript": "^2.1.4",
-		"typescript-esbuild": "latest"
+		"typescript-esbuild": "0.4.5"
 	},
 	"publishConfig": {
 		"access": "public"

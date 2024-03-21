@@ -32,7 +32,7 @@
 		"gulp-util": "^3.0.5",
 		"mime": "^2.0.3",
 		"typescript": "^1.6.2",
-		"typescript-esbuild": "latest"
+		"typescript-esbuild": "0.4.5"
 	},
 	"publishConfig": {
 		"access": "public"
