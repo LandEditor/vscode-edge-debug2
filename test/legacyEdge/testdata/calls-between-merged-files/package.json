@@ -1,29 +1,14 @@
 {
-	"name": "testdata-calls-between-merged-files",
-	"version": "0.0.1",
-	"private": false,
-	"description": "Test project for vscode-node-debug2 using gulp",
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"author": {
+		"email": "Hello@Playform.Cloud",
+		"name": "Playform",
+		"url": "https://playform.cloud"
+	},
 	"bugs": {
 		"url": "https://github.com/CodeEditorLand/Foundation/issues"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
-	"author": {
-		"name": "Playform",
-		"email": "Hello@Playform.Cloud",
-		"url": "https://playform.cloud"
-	},
-	"type": "module",
-	"scripts": {
-		"build": "gulp build",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"serve": "http-server -p 7890 ."
-	},
 	"dependencies": {},
+	"description": "Test project for vscode-node-debug2 using gulp",
 	"devDependencies": {
 		"@types/node": "^6.0.41",
 		"gulp": "^3.9.1",
@@ -33,9 +18,24 @@
 		"gulp-typescript": "^3.1.4",
 		"http-server": "^0.9.0",
 		"typescript": "^2.1.4",
-		"typescript-esbuild": "0.4.5"
+		"typescript-esbuild": ""
 	},
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"license": "SEE LICENSE IN LICENSE",
+	"name": "testdata-calls-between-merged-files",
+	"private": false,
 	"publishConfig": {
 		"access": "public"
-	}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"scripts": {
+		"build": "gulp build",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"serve": "http-server -p 7890 ."
+	},
+	"type": "module",
+	"version": "0.0.1"
 }
