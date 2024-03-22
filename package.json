@@ -1,18 +1,39 @@
 {
-	"activationEvents": [
-		"onDebug",
-		"onDebugInitialConfigurations",
-		"onDebugResolve:edge",
-		"onCommand:extension.edge-debug.toggleSkippingFile",
-		"onCommand:extension.edge-debug.toggleSmartStep"
-	],
-	"author": {
-		"email": "Hello@Playform.Cloud",
-		"name": "Playform",
-		"url": "https://playform.cloud"
-	},
+	"name": "debugger-for-edge",
+	"displayName": "Debugger for Microsoft Edge",
+	"version": "0.0.1",
+	"private": false,
+	"description": "%extension.description%",
+	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
 	"bugs": {
 		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Playform",
+		"email": "Hello@Playform.Cloud",
+		"url": "https://playform.cloud"
+	},
+	"type": "module",
+	"main": "./out/src/extension",
+	"scripts": {
+		"build": "gulp build",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
+		"major": "npm version major -m '%s'",
+		"minor": "npm version minor -m '%s'",
+		"package": "gulp package",
+		"patch": "npm version patch -m '%s'",
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
+		"start": "node out/src/edgeChromiumDebug.js --server=4712",
+		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
+		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\"",
+		"vscode:prepublish": "gulp verify-no-linked-modules",
+		"watch": "gulp watch"
 	},
 	"contributes": {
 		"breakpoints": [
@@ -815,6 +836,13 @@
 			]
 		}
 	},
+	"activationEvents": [
+		"onDebug",
+		"onDebugInitialConfigurations",
+		"onDebugResolve:edge",
+		"onCommand:extension.edge-debug.toggleSkippingFile",
+		"onCommand:extension.edge-debug.toggleSmartStep"
+	],
 	"dependencies": {
 		"natives": "^1.1.6",
 		"portscanner": "^2.2.0",
@@ -822,7 +850,6 @@
 		"vscode-debugadapter": "^1.33.0",
 		"vscode-nls": "3.2.4"
 	},
-	"description": "%extension.description%",
 	"devDependencies": {
 		"@types/mocha": "^2.2.35",
 		"@types/mockery": "^1.4.29",
@@ -848,7 +875,7 @@
 		"ts-loader": "^1.0.0",
 		"typemoq": "^2.1.0",
 		"typescript": "^2.9.2",
-		"typescript-esbuild": "",
+		"typescript-esbuild": "0.4.5",
 		"vsce": "^1.61.0",
 		"vscode": "^1.1.37",
 		"vscode-chrome-debug-core-testsupport": "^4.0.0",
@@ -856,38 +883,11 @@
 		"vscode-debugprotocol": "^1.32.0",
 		"vscode-nls-dev": "^3.2.3"
 	},
-	"displayName": "Debugger for Microsoft Edge",
-	"extensionKind": [
-		"ui"
-	],
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
-	"icon": "images/icon.png",
-	"license": "SEE LICENSE IN LICENSE",
-	"main": "./out/src/extension",
-	"name": "debugger-for-edge",
-	"private": false,
 	"publishConfig": {
 		"access": "public"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
-	},
-	"scripts": {
-		"build": "gulp build",
-		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
-		"major": "npm version major -m '%s'",
-		"minor": "npm version minor -m '%s'",
-		"package": "gulp package",
-		"patch": "npm version patch -m '%s'",
-		"postinstall": "node ./node_modules/vscode/bin/install",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"start": "node out/src/edgeChromiumDebug.js --server=4712",
-		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
-		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\"",
-		"vscode:prepublish": "gulp verify-no-linked-modules",
-		"watch": "gulp watch"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	"icon": "images/icon.png",
+	"extensionKind": [
+		"ui"
+	]
 }
