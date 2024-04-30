@@ -1,22 +1,40 @@
 {
-  "name": "testdata-calls-between-merged-files",
-  "version": "1.0.0",
-  "description": "Test project for vscode-node-debug2 using gulp",
-  "author": "",
-  "license": "MIT",
-  "scripts": {
-    "build": "gulp build",
-    "serve": "http-server -p 7890 ."
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "@types/node": "^6.0.41",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-filter": "^4.0.0",
-    "gulp-sourcemaps": "^1.9.1",
-    "gulp-typescript": "^3.1.4",
-    "http-server": "^0.9.0",
-    "typescript": "^2.1.4"
-  }
+	"name": "testdata-calls-between-merged-files",
+	"version": "0.0.1",
+	"private": false,
+	"description": "Test project for vscode-node-debug2 using gulp",
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDebug2#readme",
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDebug2/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandEdgeDebug2.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"build": "gulp build",
+		"prepublishOnly": "Build 'Source/**/*.ts'",
+		"serve": "http-server -p 7890 ."
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6",
+		"@types/node": "^6.0.41",
+		"http-server": "^0.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
 }
