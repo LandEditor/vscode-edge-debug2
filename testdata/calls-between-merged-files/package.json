@@ -31,8 +31,8 @@
 	"devDependencies": {
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
-		"@types/node": "^6.0.41",
-		"http-server": "^0.9.0"
+		"@types/node": "20.12.7",
+		"http-server": "14.1.1"
 	},
 	"publishConfig": {
 		"access": "public"
