@@ -851,7 +851,7 @@
 		"@playform/build": "0.0.7",
 		"@playform/document": "0.0.6",
 		"@types/mockery": "1.4.33",
-		"@types/node": "20.12.7",
+		"@types/node": "20.12.10",
 		"@types/source-map": "0.5.2",
 		"@types/tmp": "0.2.6",
 		"concurrently": "8.2.2",
