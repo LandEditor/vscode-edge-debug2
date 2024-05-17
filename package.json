@@ -1,27 +1,7 @@
 {
 	"name": "debugger-for-edge",
 	"displayName": "Debugger for Microsoft Edge",
-	"version": "0.0.1",
-	"private": false,
 	"description": "%extension.description%",
-	"keywords": [
-		"land"
-	],
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDebug2#readme",
-	"bugs": {
-		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDebug2/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/LandEdgeDebug2.git"
-	},
-	"license": "SEE LICENSE IN LICENSE",
-	"author": {
-		"name": "🛬 Land —",
-		"email": "Land@PlayForm.Cloud",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
-	"type": "module",
 	"main": "./out/src/extension",
 	"scripts": {
 		"Document": "Document 'Source/**/*.ts'",
@@ -849,7 +829,6 @@
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
-		"@playform/document": "0.0.6",
 		"@types/mockery": "1.4.33",
 		"@types/node": "20.12.10",
 		"@types/source-map": "0.5.2",
@@ -867,9 +846,6 @@
 		"tmp": "0.2.3",
 		"ts-loader": "9.5.1",
 		"typemoq": "2.1.0"
-	},
-	"publishConfig": {
-		"access": "public"
 	},
 	"icon": "images/icon.png",
 	"extensionKind": [
