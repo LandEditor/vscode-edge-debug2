@@ -1,19 +1,19 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"noImplicitAny": false,
-		"removeComments": false,
-		"target": "ES6",
-		"sourceMap": true,
-		"rootDir": ".",
-		"outDir": "out",
-		"noImplicitThis": true
-	},
-	"exclude": [
-		"node_modules/",
-		"testapp/",
-		"testdata/",
-		"test/legacyEdge/testapp/",
-		"test/legacyEdge/testdata/"
-	]
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": false,
+        "target": "ES6",
+        "sourceMap": true,
+        "rootDir": ".",
+        "outDir": "out",
+        "noImplicitThis": true
+    },
+    "exclude": [
+        "node_modules/",
+        "testapp/",
+        "testdata/",
+        "test/legacyEdge/testapp/",
+        "test/legacyEdge/testdata/"
+    ]
 }
