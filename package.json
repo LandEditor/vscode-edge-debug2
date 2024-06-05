@@ -1,894 +1,851 @@
 {
-  "name": "debugger-for-edge",
-  "displayName": "Debugger for Microsoft Edge",
-  "version": "1.0.16",
-  "icon": "images/icon.png",
-  "description": "%extension.description%",
-  "extensionKind": [
-    "ui"
-  ],
-  "author": {
-    "name": "Microsoft Corporation"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Microsoft/vscode-edge-debug2"
-  },
-  "publisher": "msjsdiag",
-  "bugs": "https://github.com/Microsoft/vscode-edge-debug2/issues",
-  "engines": {
-    "vscode": "^1.17.0"
-  },
-  "categories": [
-    "Debuggers"
-  ],
-  "keywords": [
-    "multi-root ready"
-  ],
-  "license": "SEE LICENSE IN LICENSE.txt",
-  "dependencies": {
-    "natives": "^1.1.6",
-    "portscanner": "^2.2.0",
-    "vscode-chrome-debug-core": "6.7.50",
-    "vscode-debugadapter": "^1.33.0",
-    "vscode-nls": "3.2.4"
-  },
-  "devDependencies": {
-    "@types/mocha": "^2.2.35",
-    "@types/mockery": "^1.4.29",
-    "@types/node": "^8.10.48",
-    "@types/source-map": "^0.1.27",
-    "@types/tmp": "0.0.32",
-    "concurrently": "^3.1.0",
-    "del": "^3.0.0",
-    "event-stream": "^3.3.4",
-    "fancy-log": "^1.3.3",
-    "glob": "^7.1.3",
-    "gulp": "^4.0.1",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-tslint": "^8.1.3",
-    "gulp-typescript": "^4.0.1",
-    "http-server": "^0.11.1",
-    "minimist": "^1.2.2",
-    "mocha": "^5.2.0",
-    "mockery": "^1.7.0",
-    "randomatic": "3.0.0",
-    "run-sequence": "^2.2.0",
-    "tmp": "0.0.31",
-    "ts-loader": "^1.0.0",
-    "tslint": "^5.16.0",
-    "typemoq": "^2.1.0",
-    "typescript": "^2.9.2",
-    "vsce": "^1.61.0",
-    "vscode": "^1.1.37",
-    "vscode-chrome-debug-core-testsupport": "^4.0.0",
-    "vscode-debugadapter-testsupport": "^1.33.0",
-    "vscode-debugprotocol": "^1.32.0",
-    "vscode-nls-dev": "^3.2.3"
-  },
-  "main": "./out/src/extension",
-  "activationEvents": [
-    "onDebug",
-    "onDebugInitialConfigurations",
-    "onDebugResolve:edge",
-    "onCommand:extension.edge-debug.toggleSkippingFile",
-    "onCommand:extension.edge-debug.toggleSmartStep"
-  ],
-  "scripts": {
-    "build": "gulp build",
-    "watch": "gulp watch",
-    "start": "node out/src/edgeChromiumDebug.js --server=4712",
-    "test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
-    "test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\"",
-    "test": "npm run test:legacy-edge && npm run test:msedge",
-    "intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
-    "lint": "gulp tslint",
-    "vscode:prepublish": "gulp verify-no-linked-modules",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "patch": "npm version patch -m '%s'",
-    "minor": "npm version minor -m '%s'",
-    "major": "npm version major -m '%s'",
-    "package": "gulp package"
-  },
-  "contributes": {
-    "breakpoints": [
-      {
-        "language": "javascript"
-      },
-      {
-        "language": "typescriptreact"
-      },
-      {
-        "language": "javascriptreact"
-      },
-      {
-        "language": "fsharp"
-      }
-    ],
-    "debuggers": [
-      {
-        "type": "msedge",
-        "label": "MsEdge",
-        "program": "./out/src/edgeChromiumDebug.js",
-        "runtime": "node",
-        "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-        "languages": [
-          "javascript",
-          "typescript",
-          "javascriptreact",
-          "typescriptreact"
-        ],
-        "configurationSnippets": [
-          {
-            "label": "Edge: Launch",
-            "description": "Launch Edge to debug a URL",
-            "body": {
-              "type": "edge",
-              "request": "launch",
-              "name": "Launch Edge",
-              "url": "http://localhost:8080",
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
-            }
-          },
-          {
-            "label": "Edge: Attach",
-            "description": "Attach to an instance of Edge already in debug mode",
-            "body": {
-              "type": "edge",
-              "request": "attach",
-              "name": "Attach to Edge",
-              "port": 2015,
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
-            }
-          }
-        ],
-        "configurationAttributes": {
-          "launch": {
-            "required": [
-              "version"
-            ],
-            "properties": {
-              "version": {
-                "type": "string",
-                "enum": [
-                  "canary",
-                  "dev",
-                  "beta",
-                  "stable"
-                ],
-                "description": "%edge.version.description%",
-                "default": "dev"
-              },
-              "port": {
-                "type": "number",
-                "description": "%edge.port.description%",
-                "default": 2015
-              },
-              "address": {
-                "type": "string",
-                "description": "%edge.address.description%",
-                "default": "127.0.0.1"
-              },
-              "file": {
-                "type": "string",
-                "description": "%edge.file.description%",
-                "default": "${workspaceFolder}/index.html"
-              },
-              "url": {
-                "type": "string",
-                "description": "%edge.url.description%",
-                "default": "http://localhost:8080"
-              },
-              "webRoot": {
-                "type": "string",
-                "description": "%edge.webRoot.description%",
-                "default": "${workspaceFolder}"
-              },
-              "pathMapping": {
-                "type": "object",
-                "description": "%edge.pathMapping.description%",
-                "default": {
-                  "/": "${workspaceFolder}"
-                }
-              },
-              "runtimeExecutable": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "%edge.runtimeExecutable.description%",
-                "default": null
-              },
-              "runtimeArgs": {
-                "type": "array",
-                "description": "%edge.runtimeArgs.description%",
-                "items": {
-                  "type": "string"
-                },
-                "default": []
-              },
-              "env": {
-                "type": "object",
-                "description": "%edge.env.description%",
-                "default": {}
-              },
-              "cwd": {
-                "type": "string",
-                "description": "%edge.cwd.description%",
-                "default": null
-              },
-              "sourceMaps": {
-                "type": "boolean",
-                "description": "%edge.sourceMaps.description%",
-                "default": true
-              },
-              "diagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.diagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "verboseDiagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.verboseDiagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "trace": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "verbose",
-                  true
-                ],
-                "default": true,
-                "description": "%edge.trace.description%"
-              },
-              "userDataDir": {
-                "type": [
-                  "string",
-                  "boolean"
-                ],
-                "description": "%edge.userDataDir.description%",
-                "default": true
-              },
-              "sourceMapPathOverrides": {
-                "type": "object",
-                "description": "%edge.sourceMapPathOverrides.description%",
-                "default": {
-                  "webpack:///./*": "${webRoot}/*",
-                  "webpack:///src/*": "${webRoot}/*",
-                  "webpack:///*": "*",
-                  "webpack:///./~/*": "${webRoot}/node_modules/*",
-                  "meteor://💻app/*": "${webRoot}/*"
-                }
-              },
-              "smartStep": {
-                "type": "boolean",
-                "description": "%edge.smartStep.description%",
-                "default": true
-              },
-              "skipFiles": {
-                "type": "array",
-                "description": "%edge.skipFiles.description%",
-                "default": []
-              },
-              "timeout": {
-                "type": "number",
-                "description": "%edge.timeout.description%",
-                "default": 10000
-              },
-              "disableNetworkCache": {
-                "type": "boolean",
-                "description": "%edge.disableNetworkCache.description%",
-                "default": true
-              },
-              "urlFilter": {
-                "type": "string",
-                "description": "%edge.urlFilter.description%",
-                "default": ""
-              },
-              "showAsyncStacks": {
-                "type": "boolean",
-                "description": "%edge.showAsyncStacks.description%",
-                "default": true
-              },
-              "breakOnLoad": {
-                "type": "boolean",
-                "description": "%edge.breakOnLoad.description%",
-                "default": true
-              },
-              "logTimestamps": {
-                "type": "boolean",
-                "description": "%edge.logTimestamps.description%",
-                "default": true
-              },
-              "breakOnLoadStrategy": {
-                "type": "string",
-                "enum": [
-                  "instrument",
-                  "regex",
-                  "off"
-                ],
-                "enumDescriptions": [
-                  "%edge.breakOnLoadStrategy.instrument.description%",
-                  "%edge.breakOnLoadStrategy.regex.description%",
-                  "%edge.breakOnLoadStrategy.off.description%"
-                ],
-                "description": "%edge.breakOnLoadStrategy.description%",
-                "default": "instrument"
-              },
-              "targetTypes": {
-                "type": [
-                  "array",
-                  "null"
-                ],
-                "description": "%edge.targetTypes.description%",
-                "default": [
-                  "page"
-                ]
-              },
-              "useWebView": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "advanced",
-                  true,
-                  false
-                ],
-                "description": "%edge.useWebView.description%",
-                "default": false
-              }
-            }
-          },
-          "attach": {
-            "required": [
-              "port"
-            ],
-            "properties": {
-              "port": {
-                "type": "number",
-                "description": "%edge.port.description%",
-                "default": 2015
-              },
-              "address": {
-                "type": "string",
-                "description": "%edge.address.description%",
-                "default": "127.0.0.1"
-              },
-              "sourceMaps": {
-                "type": "boolean",
-                "description": "%edge.sourceMaps.description%",
-                "default": true
-              },
-              "diagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.diagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "verboseDiagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.verboseDiagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "trace": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "verbose",
-                  true
-                ],
-                "default": true,
-                "description": "%edge.trace.description%"
-              },
-              "url": {
-                "type": "string",
-                "description": "%edge.url.description%",
-                "default": "http://localhost:8080"
-              },
-              "webRoot": {
-                "type": "string",
-                "description": "%edge.webRoot.description%",
-                "default": "${workspaceFolder}"
-              },
-              "pathMapping": {
-                "type": "object",
-                "description": "%edge.pathMapping.description%",
-                "default": {}
-              },
-              "sourceMapPathOverrides": {
-                "type": "object",
-                "description": "%edge.sourceMapPathOverrides.description%",
-                "default": {}
-              },
-              "smartStep": {
-                "type": "boolean",
-                "description": "%edge.smartStep.description%",
-                "default": true
-              },
-              "skipFiles": {
-                "type": "array",
-                "description": "%edge.skipFiles.description%",
-                "default": []
-              },
-              "timeout": {
-                "type": "number",
-                "description": "%edge.timeout.description%",
-                "default": 10000
-              },
-              "disableNetworkCache": {
-                "type": "boolean",
-                "description": "%edge.disableNetworkCache.description%",
-                "default": true
-              },
-              "urlFilter": {
-                "type": "string",
-                "description": "%edge.urlFilter.description%",
-                "default": ""
-              },
-              "targetTypes": {
-                "type": [
-                  "array",
-                  "null"
-                ],
-                "description": "%edge.targetTypes.description%",
-                "default": [
-                  "page"
-                ]
-              },
-              "showAsyncStacks": {
-                "type": "boolean",
-                "description": "%edge.showAsyncStacks.description%",
-                "default": true
-              },
-              "logTimestamps": {
-                "type": "boolean",
-                "description": "%edge.logTimestamps.description%",
-                "default": true
-              },
-              "useWebView": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "advanced",
-                  true,
-                  false
-                ],
-                "description": "%edge.useWebView.description%",
-                "default": false
-              }
-            }
-          }
-        }
-      },
-      {
-        "type": "edge",
-        "label": "Edge",
-        "program": "./out/src/legacyEdge/edgeDebug.js",
-        "runtime": "node",
-        "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-        "languages": [
-          "javascript",
-          "typescript",
-          "javascriptreact",
-          "typescriptreact"
-        ],
-        "configurationSnippets": [
-          {
-            "label": "Edge: Launch",
-            "description": "Launch Edge to debug a URL",
-            "body": {
-              "type": "edge",
-              "request": "launch",
-              "name": "Launch Edge",
-              "url": "http://localhost:8080",
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
-            }
-          },
-          {
-            "label": "Edge: Attach",
-            "description": "Attach to an instance of Edge already in debug mode",
-            "body": {
-              "type": "edge",
-              "request": "attach",
-              "name": "Attach to Edge",
-              "port": 2015,
-              "webRoot": "^\"${2:\\${workspaceFolder\\}}\""
-            }
-          }
-        ],
-        "configurationAttributes": {
-          "launch": {
-            "required": [],
-            "properties": {
-              "port": {
-                "type": "number",
-                "description": "%edge.port.description%",
-                "default": 2015
-              },
-              "address": {
-                "type": "string",
-                "description": "%edge.address.description%",
-                "default": "127.0.0.1"
-              },
-              "file": {
-                "type": "string",
-                "description": "%edge.file.description%",
-                "default": "${workspaceFolder}/index.html"
-              },
-              "url": {
-                "type": "string",
-                "description": "%edge.url.description%",
-                "default": "http://localhost:8080"
-              },
-              "webRoot": {
-                "type": "string",
-                "description": "%edge.webRoot.description%",
-                "default": "${workspaceFolder}"
-              },
-              "pathMapping": {
-                "type": "object",
-                "description": "%edge.pathMapping.description%",
-                "default": {
-                  "/": "${workspaceFolder}"
-                }
-              },
-              "runtimeExecutable": {
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "description": "%edge.runtimeExecutable.description%",
-                "default": null
-              },
-              "runtimeArgs": {
-                "type": "array",
-                "description": "%edge.runtimeArgs.description%",
-                "items": {
-                  "type": "string"
-                },
-                "default": []
-              },
-              "env": {
-                "type": "object",
-                "description": "%edge.env.description%",
-                "default": {}
-              },
-              "cwd": {
-                "type": "string",
-                "description": "%edge.cwd.description%",
-                "default": null
-              },
-              "sourceMaps": {
-                "type": "boolean",
-                "description": "%edge.sourceMaps.description%",
-                "default": true
-              },
-              "diagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.diagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "verboseDiagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.verboseDiagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "trace": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "verbose",
-                  true
-                ],
-                "default": true,
-                "description": "%edge.trace.description%"
-              },
-              "sourceMapPathOverrides": {
-                "type": "object",
-                "description": "%edge.sourceMapPathOverrides.description%",
-                "default": {
-                  "webpack:///*": "*",
-                  "webpack:///./*": "${webRoot}/*",
-                  "webpack:///src/*": "${webRoot}/*",
-                  "webpack:///./~/*": "${webRoot}/node_modules/*"
-                }
-              },
-              "smartStep": {
-                "type": "boolean",
-                "description": "%edge.smartStep.description%",
-                "default": true
-              },
-              "skipFiles": {
-                "type": "array",
-                "description": "%edge.skipFiles.description%",
-                "default": []
-              },
-              "timeout": {
-                "type": "number",
-                "description": "%edge.timeout.description%",
-                "default": 10000
-              },
-              "disableNetworkCache": {
-                "type": "boolean",
-                "description": "%edge.disableNetworkCache.description%",
-                "default": true
-              },
-              "urlFilter": {
-                "type": "string",
-                "description": "%edge.urlFilter.description%",
-                "default": ""
-              },
-              "showAsyncStacks": {
-                "type": "boolean",
-                "description": "%edge.showAsyncStacks.description%",
-                "default": true
-              },
-              "logTimestamps": {
-                "type": "boolean",
-                "description": "%edge.logTimestamps.description%",
-                "default": true
-              },
-              "version": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'version' flag"
-                ],
-                "type": "string",
-                "enum": [
-                  "canary",
-                  "dev",
-                  "beta",
-                  "stable"
-                ],
-                "description": "%edge.version.description%",
-                "default": "dev"
-              },
-              "userDataDir": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'userDataDir' flag"
-                ],
-                "type": [
-                  "string",
-                  "boolean"
-                ],
-                "description": "%edge.userDataDir.description%",
-                "default": ""
-              },
-              "breakOnLoad": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'breakOnLoad' flag"
-                ],
-                "type": "boolean",
-                "description": "%edge.breakOnLoad.description%",
-                "default": true
-              },
-              "breakOnLoadStrategy": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'breakOnLoadStrategy' flag"
-                ],
-                "type": "string",
-                "enum": [
-                  "instrument",
-                  "regex",
-                  "off"
-                ],
-                "enumDescriptions": [
-                  "%edge.breakOnLoadStrategy.instrument.description%",
-                  "%edge.breakOnLoadStrategy.regex.description%",
-                  "%edge.breakOnLoadStrategy.off.description%"
-                ],
-                "description": "%edge.breakOnLoadStrategy.description%",
-                "default": "instrument"
-              },
-              "targetTypes": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'targetTypes' flag"
-                ],
-                "type": [
-                  "array",
-                  "null"
-                ],
-                "description": "%edge.targetTypes.description%",
-                "default": [
-                  "page"
-                ]
-              },
-              "useWebView": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "advanced",
-                  true,
-                  false
-                ],
-                "description": "%edge.useWebView.description%",
-                "default": false
-              }
-            }
-          },
-          "attach": {
-            "required": [
-              "port"
-            ],
-            "properties": {
-              "port": {
-                "type": "number",
-                "description": "%edge.port.description%",
-                "default": 2015
-              },
-              "address": {
-                "type": "string",
-                "description": "%edge.address.description%",
-                "default": "127.0.0.1"
-              },
-              "sourceMaps": {
-                "type": "boolean",
-                "description": "%edge.sourceMaps.description%",
-                "default": true
-              },
-              "diagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.diagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "verboseDiagnosticLogging": {
-                "type": "boolean",
-                "description": "%edge.verboseDiagnosticLogging.description%",
-                "default": true,
-                "deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead."
-              },
-              "trace": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "verbose",
-                  true
-                ],
-                "default": true,
-                "description": "%edge.trace.description%"
-              },
-              "url": {
-                "type": "string",
-                "description": "%edge.url.description%",
-                "default": "http://localhost:8080"
-              },
-              "webRoot": {
-                "type": "string",
-                "description": "%edge.webRoot.description%",
-                "default": "${workspaceFolder}"
-              },
-              "pathMapping": {
-                "type": "object",
-                "description": "%edge.pathMapping.description%",
-                "default": {}
-              },
-              "sourceMapPathOverrides": {
-                "type": "object",
-                "description": "%edge.sourceMapPathOverrides.description%",
-                "default": {}
-              },
-              "smartStep": {
-                "type": "boolean",
-                "description": "%edge.smartStep.description%",
-                "default": true
-              },
-              "skipFiles": {
-                "type": "array",
-                "description": "%edge.skipFiles.description%",
-                "default": []
-              },
-              "timeout": {
-                "type": "number",
-                "description": "%edge.timeout.description%",
-                "default": 10000
-              },
-              "disableNetworkCache": {
-                "type": "boolean",
-                "description": "%edge.disableNetworkCache.description%",
-                "default": true
-              },
-              "urlFilter": {
-                "type": "string",
-                "description": "%edge.urlFilter.description%",
-                "default": ""
-              },
-              "showAsyncStacks": {
-                "type": "boolean",
-                "description": "%edge.showAsyncStacks.description%",
-                "default": true
-              },
-              "logTimestamps": {
-                "type": "boolean",
-                "description": "%edge.logTimestamps.description%",
-                "default": true
-              },
-              "targetTypes": {
-                "//": [
-                  "This property is here so that intellisense will show it as valid",
-                  "The __LEGACY_EDGE__ adapter does not process a 'targetTypes' flag"
-                ],
-                "type": [
-                  "array",
-                  "null"
-                ],
-                "description": "%edge.targetTypes.description%",
-                "default": [
-                  "page"
-                ]
-              },
-              "useWebView": {
-                "type": [
-                  "boolean",
-                  "string"
-                ],
-                "enum": [
-                  "advanced",
-                  true,
-                  false
-                ],
-                "description": "%edge.useWebView.description%",
-                "default": false
-              }
-            }
-          }
-        }
-      }
-    ],
-    "menus": {
-      "debug/callstack/context": [
-        {
-          "command": "extension.edge-debug.toggleSkippingFile",
-          "group": "navigation",
-          "when": "inDebugMode && debugType == 'edge' && callStackItemType == 'stackFrame'"
-        },
-        {
-          "command": "extension.edge-debug.toggleSmartStep",
-          "group": "navigation",
-          "when": "inDebugMode && debugType == 'edge' && callStackItemType == 'stackFrame'"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "extension.edge-debug.toggleSkippingFile",
-        "title": "%edge.toggleSkipping.title%"
-      },
-      {
-        "command": "extension.edge-debug.toggleSmartStep",
-        "title": "%edge.toggleSmartStep.title%"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "extension.node-debug.pickLoadedScript",
-        "key": "ctrl+f4",
-        "mac": "cmd+f4",
-        "when": "debugType == 'edge'"
-      }
-    ]
-  }
+	"name": "debugger-for-edge",
+	"displayName": "Debugger for Microsoft Edge",
+	"description": "%extension.description%",
+	"main": "./out/src/extension",
+	"scripts": {
+		"build": "gulp build",
+		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
+		"major": "npm version major -m '%s'",
+		"minor": "npm version minor -m '%s'",
+		"patch": "npm version patch -m '%s'",
+		"start": "node out/src/edgeChromiumDebug.js --server=4712",
+		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
+		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\""
+	},
+	"contributes": {
+		"breakpoints": [
+			{
+				"language": "javascript"
+			},
+			{
+				"language": "typescriptreact"
+			},
+			{
+				"language": "javascriptreact"
+			},
+			{
+				"language": "fsharp"
+			}
+		],
+		"commands": [
+			{
+				"command": "extension.edge-debug.toggleSkippingFile",
+				"title": "%edge.toggleSkipping.title%"
+			},
+			{
+				"command": "extension.edge-debug.toggleSmartStep",
+				"title": "%edge.toggleSmartStep.title%"
+			}
+		],
+		"debuggers": [
+			{
+				"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+				"configurationAttributes": {
+					"attach": {
+						"properties": {
+							"address": {
+								"default": "127.0.0.1",
+								"description": "%edge.address.description%",
+								"type": "string"
+							},
+							"diagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.diagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"disableNetworkCache": {
+								"default": true,
+								"description": "%edge.disableNetworkCache.description%",
+								"type": "boolean"
+							},
+							"logTimestamps": {
+								"default": true,
+								"description": "%edge.logTimestamps.description%",
+								"type": "boolean"
+							},
+							"pathMapping": {
+								"default": {},
+								"description": "%edge.pathMapping.description%",
+								"type": "object"
+							},
+							"port": {
+								"default": 2015,
+								"description": "%edge.port.description%",
+								"type": "number"
+							},
+							"showAsyncStacks": {
+								"default": true,
+								"description": "%edge.showAsyncStacks.description%",
+								"type": "boolean"
+							},
+							"skipFiles": {
+								"default": [],
+								"description": "%edge.skipFiles.description%",
+								"type": "array"
+							},
+							"smartStep": {
+								"default": true,
+								"description": "%edge.smartStep.description%",
+								"type": "boolean"
+							},
+							"sourceMapPathOverrides": {
+								"default": {},
+								"description": "%edge.sourceMapPathOverrides.description%",
+								"type": "object"
+							},
+							"sourceMaps": {
+								"default": true,
+								"description": "%edge.sourceMaps.description%",
+								"type": "boolean"
+							},
+							"targetTypes": {
+								"default": [
+									"page"
+								],
+								"description": "%edge.targetTypes.description%",
+								"type": [
+									"array",
+									"null"
+								]
+							},
+							"timeout": {
+								"default": 10000,
+								"description": "%edge.timeout.description%",
+								"type": "number"
+							},
+							"trace": {
+								"default": true,
+								"description": "%edge.trace.description%",
+								"enum": [
+									"verbose",
+									true
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"url": {
+								"default": "http://localhost:8080",
+								"description": "%edge.url.description%",
+								"type": "string"
+							},
+							"urlFilter": {
+								"default": "",
+								"description": "%edge.urlFilter.description%",
+								"type": "string"
+							},
+							"useWebView": {
+								"default": false,
+								"description": "%edge.useWebView.description%",
+								"enum": [
+									"advanced",
+									true,
+									false
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"verboseDiagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.verboseDiagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"webRoot": {
+								"default": "${workspaceFolder}",
+								"description": "%edge.webRoot.description%",
+								"type": "string"
+							}
+						},
+						"required": [
+							"port"
+						]
+					},
+					"launch": {
+						"properties": {
+							"address": {
+								"default": "127.0.0.1",
+								"description": "%edge.address.description%",
+								"type": "string"
+							},
+							"breakOnLoad": {
+								"default": true,
+								"description": "%edge.breakOnLoad.description%",
+								"type": "boolean"
+							},
+							"breakOnLoadStrategy": {
+								"default": "instrument",
+								"description": "%edge.breakOnLoadStrategy.description%",
+								"enum": [
+									"instrument",
+									"regex",
+									"off"
+								],
+								"enumDescriptions": [
+									"%edge.breakOnLoadStrategy.instrument.description%",
+									"%edge.breakOnLoadStrategy.regex.description%",
+									"%edge.breakOnLoadStrategy.off.description%"
+								],
+								"type": "string"
+							},
+							"cwd": {
+								"default": null,
+								"description": "%edge.cwd.description%",
+								"type": "string"
+							},
+							"diagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.diagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"disableNetworkCache": {
+								"default": true,
+								"description": "%edge.disableNetworkCache.description%",
+								"type": "boolean"
+							},
+							"env": {
+								"default": {},
+								"description": "%edge.env.description%",
+								"type": "object"
+							},
+							"file": {
+								"default": "${workspaceFolder}/index.html",
+								"description": "%edge.file.description%",
+								"type": "string"
+							},
+							"logTimestamps": {
+								"default": true,
+								"description": "%edge.logTimestamps.description%",
+								"type": "boolean"
+							},
+							"pathMapping": {
+								"default": {
+									"/": "${workspaceFolder}"
+								},
+								"description": "%edge.pathMapping.description%",
+								"type": "object"
+							},
+							"port": {
+								"default": 2015,
+								"description": "%edge.port.description%",
+								"type": "number"
+							},
+							"runtimeArgs": {
+								"default": [],
+								"description": "%edge.runtimeArgs.description%",
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"runtimeExecutable": {
+								"default": null,
+								"description": "%edge.runtimeExecutable.description%",
+								"type": [
+									"string",
+									"null"
+								]
+							},
+							"showAsyncStacks": {
+								"default": true,
+								"description": "%edge.showAsyncStacks.description%",
+								"type": "boolean"
+							},
+							"skipFiles": {
+								"default": [],
+								"description": "%edge.skipFiles.description%",
+								"type": "array"
+							},
+							"smartStep": {
+								"default": true,
+								"description": "%edge.smartStep.description%",
+								"type": "boolean"
+							},
+							"sourceMapPathOverrides": {
+								"default": {
+									"meteor://💻app/*": "${webRoot}/*",
+									"webpack:///*": "*",
+									"webpack:///./*": "${webRoot}/*",
+									"webpack:///./~/*": "${webRoot}/node_modules/*",
+									"webpack:///src/*": "${webRoot}/*"
+								},
+								"description": "%edge.sourceMapPathOverrides.description%",
+								"type": "object"
+							},
+							"sourceMaps": {
+								"default": true,
+								"description": "%edge.sourceMaps.description%",
+								"type": "boolean"
+							},
+							"targetTypes": {
+								"default": [
+									"page"
+								],
+								"description": "%edge.targetTypes.description%",
+								"type": [
+									"array",
+									"null"
+								]
+							},
+							"timeout": {
+								"default": 10000,
+								"description": "%edge.timeout.description%",
+								"type": "number"
+							},
+							"trace": {
+								"default": true,
+								"description": "%edge.trace.description%",
+								"enum": [
+									"verbose",
+									true
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"url": {
+								"default": "http://localhost:8080",
+								"description": "%edge.url.description%",
+								"type": "string"
+							},
+							"urlFilter": {
+								"default": "",
+								"description": "%edge.urlFilter.description%",
+								"type": "string"
+							},
+							"useWebView": {
+								"default": false,
+								"description": "%edge.useWebView.description%",
+								"enum": [
+									"advanced",
+									true,
+									false
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"userDataDir": {
+								"default": true,
+								"description": "%edge.userDataDir.description%",
+								"type": [
+									"string",
+									"boolean"
+								]
+							},
+							"verboseDiagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.verboseDiagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"version": {
+								"default": "dev",
+								"description": "%edge.version.description%",
+								"enum": [
+									"canary",
+									"dev",
+									"beta",
+									"stable"
+								],
+								"type": "string"
+							},
+							"webRoot": {
+								"default": "${workspaceFolder}",
+								"description": "%edge.webRoot.description%",
+								"type": "string"
+							}
+						},
+						"required": [
+							"version"
+						]
+					}
+				},
+				"configurationSnippets": [
+					{
+						"body": {
+							"name": "Launch Edge",
+							"request": "launch",
+							"type": "edge",
+							"url": "http://localhost:8080",
+							"webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+						},
+						"description": "Launch Edge to debug a URL",
+						"label": "Edge: Launch"
+					},
+					{
+						"body": {
+							"name": "Attach to Edge",
+							"port": 2015,
+							"request": "attach",
+							"type": "edge",
+							"webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+						},
+						"description": "Attach to an instance of Edge already in debug mode",
+						"label": "Edge: Attach"
+					}
+				],
+				"label": "MsEdge",
+				"languages": [
+					"javascript",
+					"typescript",
+					"javascriptreact",
+					"typescriptreact"
+				],
+				"program": "./out/src/edgeChromiumDebug.js",
+				"runtime": "node",
+				"type": "msedge"
+			},
+			{
+				"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+				"configurationAttributes": {
+					"attach": {
+						"properties": {
+							"address": {
+								"default": "127.0.0.1",
+								"description": "%edge.address.description%",
+								"type": "string"
+							},
+							"diagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.diagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"disableNetworkCache": {
+								"default": true,
+								"description": "%edge.disableNetworkCache.description%",
+								"type": "boolean"
+							},
+							"logTimestamps": {
+								"default": true,
+								"description": "%edge.logTimestamps.description%",
+								"type": "boolean"
+							},
+							"pathMapping": {
+								"default": {},
+								"description": "%edge.pathMapping.description%",
+								"type": "object"
+							},
+							"port": {
+								"default": 2015,
+								"description": "%edge.port.description%",
+								"type": "number"
+							},
+							"showAsyncStacks": {
+								"default": true,
+								"description": "%edge.showAsyncStacks.description%",
+								"type": "boolean"
+							},
+							"skipFiles": {
+								"default": [],
+								"description": "%edge.skipFiles.description%",
+								"type": "array"
+							},
+							"smartStep": {
+								"default": true,
+								"description": "%edge.smartStep.description%",
+								"type": "boolean"
+							},
+							"sourceMapPathOverrides": {
+								"default": {},
+								"description": "%edge.sourceMapPathOverrides.description%",
+								"type": "object"
+							},
+							"sourceMaps": {
+								"default": true,
+								"description": "%edge.sourceMaps.description%",
+								"type": "boolean"
+							},
+							"targetTypes": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'targetTypes' flag"
+								],
+								"default": [
+									"page"
+								],
+								"description": "%edge.targetTypes.description%",
+								"type": [
+									"array",
+									"null"
+								]
+							},
+							"timeout": {
+								"default": 10000,
+								"description": "%edge.timeout.description%",
+								"type": "number"
+							},
+							"trace": {
+								"default": true,
+								"description": "%edge.trace.description%",
+								"enum": [
+									"verbose",
+									true
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"url": {
+								"default": "http://localhost:8080",
+								"description": "%edge.url.description%",
+								"type": "string"
+							},
+							"urlFilter": {
+								"default": "",
+								"description": "%edge.urlFilter.description%",
+								"type": "string"
+							},
+							"useWebView": {
+								"default": false,
+								"description": "%edge.useWebView.description%",
+								"enum": [
+									"advanced",
+									true,
+									false
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"verboseDiagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.verboseDiagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"webRoot": {
+								"default": "${workspaceFolder}",
+								"description": "%edge.webRoot.description%",
+								"type": "string"
+							}
+						},
+						"required": [
+							"port"
+						]
+					},
+					"launch": {
+						"properties": {
+							"address": {
+								"default": "127.0.0.1",
+								"description": "%edge.address.description%",
+								"type": "string"
+							},
+							"breakOnLoad": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'breakOnLoad' flag"
+								],
+								"default": true,
+								"description": "%edge.breakOnLoad.description%",
+								"type": "boolean"
+							},
+							"breakOnLoadStrategy": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'breakOnLoadStrategy' flag"
+								],
+								"default": "instrument",
+								"description": "%edge.breakOnLoadStrategy.description%",
+								"enum": [
+									"instrument",
+									"regex",
+									"off"
+								],
+								"enumDescriptions": [
+									"%edge.breakOnLoadStrategy.instrument.description%",
+									"%edge.breakOnLoadStrategy.regex.description%",
+									"%edge.breakOnLoadStrategy.off.description%"
+								],
+								"type": "string"
+							},
+							"cwd": {
+								"default": null,
+								"description": "%edge.cwd.description%",
+								"type": "string"
+							},
+							"diagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'diagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.diagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"disableNetworkCache": {
+								"default": true,
+								"description": "%edge.disableNetworkCache.description%",
+								"type": "boolean"
+							},
+							"env": {
+								"default": {},
+								"description": "%edge.env.description%",
+								"type": "object"
+							},
+							"file": {
+								"default": "${workspaceFolder}/index.html",
+								"description": "%edge.file.description%",
+								"type": "string"
+							},
+							"logTimestamps": {
+								"default": true,
+								"description": "%edge.logTimestamps.description%",
+								"type": "boolean"
+							},
+							"pathMapping": {
+								"default": {
+									"/": "${workspaceFolder}"
+								},
+								"description": "%edge.pathMapping.description%",
+								"type": "object"
+							},
+							"port": {
+								"default": 2015,
+								"description": "%edge.port.description%",
+								"type": "number"
+							},
+							"runtimeArgs": {
+								"default": [],
+								"description": "%edge.runtimeArgs.description%",
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							"runtimeExecutable": {
+								"default": null,
+								"description": "%edge.runtimeExecutable.description%",
+								"type": [
+									"string",
+									"null"
+								]
+							},
+							"showAsyncStacks": {
+								"default": true,
+								"description": "%edge.showAsyncStacks.description%",
+								"type": "boolean"
+							},
+							"skipFiles": {
+								"default": [],
+								"description": "%edge.skipFiles.description%",
+								"type": "array"
+							},
+							"smartStep": {
+								"default": true,
+								"description": "%edge.smartStep.description%",
+								"type": "boolean"
+							},
+							"sourceMapPathOverrides": {
+								"default": {
+									"webpack:///*": "*",
+									"webpack:///./*": "${webRoot}/*",
+									"webpack:///./~/*": "${webRoot}/node_modules/*",
+									"webpack:///src/*": "${webRoot}/*"
+								},
+								"description": "%edge.sourceMapPathOverrides.description%",
+								"type": "object"
+							},
+							"sourceMaps": {
+								"default": true,
+								"description": "%edge.sourceMaps.description%",
+								"type": "boolean"
+							},
+							"targetTypes": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'targetTypes' flag"
+								],
+								"default": [
+									"page"
+								],
+								"description": "%edge.targetTypes.description%",
+								"type": [
+									"array",
+									"null"
+								]
+							},
+							"timeout": {
+								"default": 10000,
+								"description": "%edge.timeout.description%",
+								"type": "number"
+							},
+							"trace": {
+								"default": true,
+								"description": "%edge.trace.description%",
+								"enum": [
+									"verbose",
+									true
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"url": {
+								"default": "http://localhost:8080",
+								"description": "%edge.url.description%",
+								"type": "string"
+							},
+							"urlFilter": {
+								"default": "",
+								"description": "%edge.urlFilter.description%",
+								"type": "string"
+							},
+							"useWebView": {
+								"default": false,
+								"description": "%edge.useWebView.description%",
+								"enum": [
+									"advanced",
+									true,
+									false
+								],
+								"type": [
+									"boolean",
+									"string"
+								]
+							},
+							"userDataDir": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'userDataDir' flag"
+								],
+								"default": "",
+								"description": "%edge.userDataDir.description%",
+								"type": [
+									"string",
+									"boolean"
+								]
+							},
+							"verboseDiagnosticLogging": {
+								"default": true,
+								"deprecationMessage": "'verboseDiagnosticLogging' is deprecated. Use 'trace' instead.",
+								"description": "%edge.verboseDiagnosticLogging.description%",
+								"type": "boolean"
+							},
+							"version": {
+								"//": [
+									"This property is here so that intellisense will show it as valid",
+									"The __LEGACY_EDGE__ adapter does not process a 'version' flag"
+								],
+								"default": "dev",
+								"description": "%edge.version.description%",
+								"enum": [
+									"canary",
+									"dev",
+									"beta",
+									"stable"
+								],
+								"type": "string"
+							},
+							"webRoot": {
+								"default": "${workspaceFolder}",
+								"description": "%edge.webRoot.description%",
+								"type": "string"
+							}
+						},
+						"required": []
+					}
+				},
+				"configurationSnippets": [
+					{
+						"body": {
+							"name": "Launch Edge",
+							"request": "launch",
+							"type": "edge",
+							"url": "http://localhost:8080",
+							"webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+						},
+						"description": "Launch Edge to debug a URL",
+						"label": "Edge: Launch"
+					},
+					{
+						"body": {
+							"name": "Attach to Edge",
+							"port": 2015,
+							"request": "attach",
+							"type": "edge",
+							"webRoot": "^\"${2:\\${workspaceFolder\\}}\""
+						},
+						"description": "Attach to an instance of Edge already in debug mode",
+						"label": "Edge: Attach"
+					}
+				],
+				"label": "Edge",
+				"languages": [
+					"javascript",
+					"typescript",
+					"javascriptreact",
+					"typescriptreact"
+				],
+				"program": "./out/src/legacyEdge/edgeDebug.js",
+				"runtime": "node",
+				"type": "edge"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "extension.node-debug.pickLoadedScript",
+				"key": "ctrl+f4",
+				"mac": "cmd+f4",
+				"when": "debugType == 'edge'"
+			}
+		],
+		"menus": {
+			"debug/callstack/context": [
+				{
+					"command": "extension.edge-debug.toggleSkippingFile",
+					"group": "navigation",
+					"when": "inDebugMode && debugType == 'edge' && callStackItemType == 'stackFrame'"
+				},
+				{
+					"command": "extension.edge-debug.toggleSmartStep",
+					"group": "navigation",
+					"when": "inDebugMode && debugType == 'edge' && callStackItemType == 'stackFrame'"
+				}
+			]
+		}
+	},
+	"activationEvents": [
+		"onDebug",
+		"onDebugInitialConfigurations",
+		"onDebugResolve:edge",
+		"onCommand:extension.edge-debug.toggleSkippingFile",
+		"onCommand:extension.edge-debug.toggleSmartStep"
+	],
+	"dependencies": {
+		"natives": "^1.1.6",
+		"portscanner": "^2.2.0"
+	},
+	"devDependencies": {
+		"@types/mockery": "^1.4.33",
+		"@types/node": "^20.14.0",
+		"@types/source-map": "^0.5.2",
+		"@types/tmp": "0.2.6",
+		"concurrently": "^8.2.2",
+		"del": "^7.1.0",
+		"event-stream": "^4.0.1",
+		"fancy-log": "^2.0.0",
+		"glob": "^10.4.1",
+		"http-server": "^14.1.1",
+		"minimist": "^1.2.8",
+		"mockery": "^2.1.0",
+		"randomatic": "3.1.1",
+		"run-sequence": "^2.2.1",
+		"tmp": "0.2.3",
+		"ts-loader": "^9.5.1",
+		"typemoq": "^2.1.0"
+	},
+	"icon": "images/icon.png",
+	"extensionKind": [
+		"ui"
+	]
 }
