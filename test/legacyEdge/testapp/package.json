@@ -8,14 +8,14 @@
   "license": "",
   "dependencies": {},
   "devDependencies": {
-    "mime": "^4.0.3",
-    "browser-sync": "^3.0.2",
-    "gulp": "^5.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-filter": "^9.0.1",
-    "gulp-sourcemaps": "^3.0.0",
-    "gulp-typescript": "^5.0.1",
-    "gulp-util": "^3.0.5",
-    "typescript": "^5.4.5"
+    "mime": "4.0.3",
+    "browser-sync": "3.0.2",
+    "gulp": "5.0.0",
+    "gulp-concat": "2.6.1",
+    "gulp-filter": "9.0.1",
+    "gulp-sourcemaps": "3.0.0",
+    "gulp-typescript": "5.0.1",
+    "gulp-util": "3.0.5",
+    "typescript": "5.4.5"
   }
 }

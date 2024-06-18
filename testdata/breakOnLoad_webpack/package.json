@@ -3,6 +3,6 @@
         "build": "webpack"
     },
     "devDependencies": {
-        "webpack": "^5.92.0"
+        "webpack": "5.92.0"
     }
 }
