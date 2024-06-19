@@ -1,8 +1,6 @@
 {
-    "scripts": {
-        "build": "webpack"
-    },
-    "devDependencies": {
-        "webpack": "5.92.0"
-    }
+	"scripts": {
+		"build": "webpack"
+	},
+	"devDependencies": {}
 }
