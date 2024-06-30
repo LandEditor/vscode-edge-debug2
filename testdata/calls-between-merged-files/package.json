@@ -1,13 +1,13 @@
 {
-	"dependencies": {},
-	"description": "Test project for vscode-node-debug2 using gulp",
-	"devDependencies": {
-		"@types/node": "20.14.9",
-		"http-server": "14.1.1"
-	},
 	"name": "testdata-calls-between-merged-files",
+	"description": "Test project for vscode-node-debug2 using gulp",
 	"scripts": {
 		"build": "gulp build",
 		"serve": "http-server -p 7890 ."
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "20.14.9",
+		"http-server": "14.1.1"
 	}
 }

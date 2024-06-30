@@ -1,11 +1,18 @@
 {
-	"activationEvents": [
-		"onDebug",
-		"onDebugInitialConfigurations",
-		"onDebugResolve:edge",
-		"onCommand:extension.edge-debug.toggleSkippingFile",
-		"onCommand:extension.edge-debug.toggleSmartStep"
-	],
+	"name": "debugger-for-edge",
+	"displayName": "Debugger for Microsoft Edge",
+	"description": "%extension.description%",
+	"main": "./out/src/extension",
+	"scripts": {
+		"build": "gulp build",
+		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
+		"major": "npm version major -m '%s'",
+		"minor": "npm version minor -m '%s'",
+		"patch": "npm version patch -m '%s'",
+		"start": "node out/src/edgeChromiumDebug.js --server=4712",
+		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
+		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\""
+	},
 	"contributes": {
 		"breakpoints": [
 			{
@@ -807,11 +814,17 @@
 			]
 		}
 	},
+	"activationEvents": [
+		"onDebug",
+		"onDebugInitialConfigurations",
+		"onDebugResolve:edge",
+		"onCommand:extension.edge-debug.toggleSkippingFile",
+		"onCommand:extension.edge-debug.toggleSmartStep"
+	],
 	"dependencies": {
 		"natives": "1.1.6",
 		"portscanner": "2.2.0"
 	},
-	"description": "%extension.description%",
 	"devDependencies": {
 		"@types/mockery": "1.4.33",
 		"@types/node": "20.14.9",
@@ -831,21 +844,8 @@
 		"ts-loader": "9.5.1",
 		"typemoq": "2.1.0"
 	},
-	"displayName": "Debugger for Microsoft Edge",
+	"icon": "images/icon.png",
 	"extensionKind": [
 		"ui"
-	],
-	"icon": "images/icon.png",
-	"main": "./out/src/extension",
-	"name": "debugger-for-edge",
-	"scripts": {
-		"build": "gulp build",
-		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
-		"major": "npm version major -m '%s'",
-		"minor": "npm version minor -m '%s'",
-		"patch": "npm version patch -m '%s'",
-		"start": "node out/src/edgeChromiumDebug.js --server=4712",
-		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
-		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\""
-	}
+	]
 }
