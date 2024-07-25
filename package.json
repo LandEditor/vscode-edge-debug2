@@ -1,11 +1,18 @@
 {
-	"activationEvents": [
-		"onDebug",
-		"onDebugInitialConfigurations",
-		"onDebugResolve:edge",
-		"onCommand:extension.edge-debug.toggleSkippingFile",
-		"onCommand:extension.edge-debug.toggleSmartStep"
-	],
+	"name": "debugger-for-edge",
+	"displayName": "Debugger for Microsoft Edge",
+	"description": "%extension.description%",
+	"main": "./out/src/extension",
+	"scripts": {
+		"build": "gulp build",
+		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
+		"major": "npm version major -m '%s'",
+		"minor": "npm version minor -m '%s'",
+		"patch": "npm version patch -m '%s'",
+		"start": "node out/src/edgeChromiumDebug.js --server=4712",
+		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
+		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\""
+	},
 	"contributes": {
 		"breakpoints": [
 			{
@@ -807,45 +814,38 @@
 			]
 		}
 	},
+	"activationEvents": [
+		"onDebug",
+		"onDebugInitialConfigurations",
+		"onDebugResolve:edge",
+		"onCommand:extension.edge-debug.toggleSkippingFile",
+		"onCommand:extension.edge-debug.toggleSmartStep"
+	],
 	"dependencies": {
-		"natives": "^1.1.6",
-		"portscanner": "^2.2.0"
+		"natives": "1.1.6",
+		"portscanner": "2.2.0"
 	},
-	"description": "%extension.description%",
 	"devDependencies": {
-		"@types/mockery": "^1.4.29",
-		"@types/node": "^8.10.48",
-		"@types/source-map": "^0.1.27",
-		"@types/tmp": "0.0.32",
-		"concurrently": "^3.1.0",
-		"del": "^3.0.0",
-		"event-stream": "^3.3.4",
-		"fancy-log": "^1.3.3",
-		"glob": "^7.1.3",
-		"http-server": "^0.11.1",
-		"minimist": "^1.2.2",
-		"mockery": "^1.7.0",
-		"randomatic": "3.0.0",
-		"run-sequence": "^2.2.0",
-		"tmp": "0.0.31",
-		"ts-loader": "^1.0.0",
-		"typemoq": "^2.1.0"
+		"@types/mockery": "1.4.33",
+		"@types/node": "20.14.12",
+		"@types/source-map": "0.5.2",
+		"@types/tmp": "0.2.6",
+		"concurrently": "8.2.2",
+		"del": "7.1.0",
+		"event-stream": "4.0.1",
+		"fancy-log": "2.0.0",
+		"glob": "11.0.0",
+		"http-server": "14.1.1",
+		"minimist": "1.2.8",
+		"mockery": "2.1.0",
+		"randomatic": "3.1.1",
+		"run-sequence": "2.2.1",
+		"tmp": "0.2.3",
+		"ts-loader": "9.5.1",
+		"typemoq": "2.1.0"
 	},
-	"displayName": "Debugger for Microsoft Edge",
+	"icon": "images/icon.png",
 	"extensionKind": [
 		"ui"
-	],
-	"icon": "images/icon.png",
-	"main": "./out/src/extension",
-	"name": "debugger-for-edge",
-	"scripts": {
-		"build": "gulp build",
-		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
-		"major": "npm version major -m '%s'",
-		"minor": "npm version minor -m '%s'",
-		"patch": "npm version patch -m '%s'",
-		"start": "node out/src/edgeChromiumDebug.js --server=4712",
-		"test:legacy-edge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/legacyEdge/test/*.test.js\"",
-		"test:msedge": "mocha --exit --timeout 20000 -s 2000 -u tdd --colors \"./out/test/*.test.js\""
-	}
+	]
 }
