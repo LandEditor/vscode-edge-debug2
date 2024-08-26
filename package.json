@@ -837,7 +837,7 @@
 	],
 	"icon": "images/icon.png",
 	"main": "./out/src/extension",
-	"name": "debugger-for-edge",
+	"name": "land-edge-debug2-debugger-for-edge",
 	"scripts": {
 		"build": "gulp build",
 		"intTest": "mocha --exit --timeout 20000 -s 3500 -u tdd --colors --reporter node_modules/vscode-chrome-debug-core-testsupport/out/loggingReporter.js ./out/test/int/*.test.js",
