@@ -2,8 +2,8 @@
 	"dependencies": {},
 	"description": "Test project for vscode-node-debug2 using gulp",
 	"devDependencies": {
-		"@types/node": "^6.0.41",
-		"http-server": "^0.9.0"
+		"@types/node": "22.6.0",
+		"http-server": "14.1.1"
 	},
 	"name": "testdata-calls-between-merged-files",
 	"scripts": {
