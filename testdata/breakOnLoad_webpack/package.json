@@ -1,6 +1,6 @@
 {
-	"devDependencies": {},
 	"scripts": {
 		"build": "webpack"
-	}
+	},
+	"devDependencies": {}
 }
