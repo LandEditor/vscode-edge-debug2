@@ -818,7 +818,7 @@
 		"@types/source-map": "0.5.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.0.1",
-		"del": "7.1.0",
+		"del": "8.0.0",
 		"event-stream": "4.0.1",
 		"fancy-log": "2.0.0",
 		"glob": "11.0.0",
