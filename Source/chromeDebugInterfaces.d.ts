@@ -26,6 +26,7 @@ export interface ILaunchRequestArgs
 	address?: string;
 	port?: number;
 	userDataDir?: string | boolean;
+
 	breakOnLoad?: boolean;
 	_clientOverlayPausedMessage?: string;
 	shouldLaunchEdgeUnelevated?: boolean;
@@ -40,6 +41,7 @@ export interface ISetExpressionArgs {
 	expression: string;
 	value: string;
 	frameId: number;
+
 	format?: DebugProtocol.ValueFormat;
 	timeout?: number;
 }

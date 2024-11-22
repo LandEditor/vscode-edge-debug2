@@ -84,6 +84,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				} else {
 					// For normal scenarios use the port specified or 2015 by default
 					args.port = args.port || 2015;
+
 					if (!args.userDataDir) {
 						// Also override the userDataDir to force remote debugging to be enabled
 						args.userDataDir = path.join(
@@ -116,6 +117,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 			this.terminateSession(
 				"WebView program ended before the debugger could connect",
 			);
+
 		if (this._chromeProc) {
 			this._chromeProc.on("exit", chromeKilledCallback);
 		}
@@ -135,6 +137,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					undefined,
 					args.extraCRDPChannelPort,
 				);
+
 				if (this._chromeProc) {
 					this._chromeProc.removeListener(
 						"exit",
@@ -196,6 +199,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 	private getWebViewLaunchUrl(args: ILaunchRequestArgs) {
 		let launchUrl: string;
+
 		if (args.file) {
 			launchUrl = coreUtils.pathToFileURL(args.file);
 		} else if (args.url) {
@@ -210,8 +214,10 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		connectionInfo: IWebViewConnectionInfo,
 	) {
 		let port = 0;
+
 		if (args.port === 0 && connectionInfo.devtoolsActivePort) {
 			const lines = connectionInfo.devtoolsActivePort.split("\n");
+
 			if (lines.length > 0) {
 				const filePort = parseInt(lines[0], 10);
 				port = isNaN(filePort) ? args.port : filePort;
@@ -230,10 +236,12 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		const webViewTarget = [
 			{ url: connectionInfo.url } as chromeConnection.ITarget,
 		];
+
 		const targets = chromeUtils.getMatchingTargets(
 			webViewTarget,
 			targetUrl,
 		);
+
 		return targets && targets.length > 0;
 	}
 
@@ -249,8 +257,11 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		}
 
 		const exeName = args.runtimeExecutable.split(/\\|\//).pop();
+
 		const pipeName = `VSCode_${crypto.randomBytes(12).toString("base64")}`;
+
 		const serverName = `\\\\.\\pipe\\WebView2\\Debugger\\${exeName}\\${pipeName}`;
+
 		const targetUrl = this.getWebViewLaunchUrl(args);
 		this._targetUrl = targetUrl;
 
@@ -260,19 +271,23 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		this._webviewPipeServer = net.createServer((stream) => {
 			stream.on("data", async (data) => {
 				logger.verbose("new webview");
+
 				const connectionInfo: IWebViewConnectionInfo = JSON.parse(
 					data.toString(),
 				);
+
 				const port = this.getWebViewPort(args, connectionInfo);
 
 				// Setup the navigation events on the new webview so we can use it to filter for our target URL
 				const address = args.address || "127.0.0.1";
+
 				const webSocketUrl = `ws://${address}:${port}/devtools/${connectionInfo.type}/${connectionInfo.id}`;
 				logger.verbose("new webview: " + webSocketUrl);
 
 				// keep the list of connections so we can lookup the port to debug on and clean up later
 				const webViewConnection =
 					new chromeConnection.ChromeConnection();
+
 				const newConnection: ConnectionInfo = new ConnectionInfo();
 				newConnection.id = connectionInfo.id;
 				newConnection.port = port;
@@ -327,6 +342,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 		if (framePayload !== undefined) {
 			const url = framePayload.frame.url;
+
 			const id = framePayload.frame.id;
 			logger.verbose("onFrameNavigated: " + url);
 
@@ -342,6 +358,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				webViewTarget,
 				this._targetUrl,
 			);
+
 			if (targets && targets.length > 0) {
 				logger.verbose("found web target matching filter");
 

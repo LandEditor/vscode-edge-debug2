@@ -11,8 +11,11 @@ export function isEdgeDebuggingSupported(): boolean {
 	}
 
 	const versionPieces = os.release().split(".");
+
 	const majorVersion = +versionPieces[0];
+
 	const minorVersion = +versionPieces[1];
+
 	const buildNumber = +versionPieces[2];
 
 	return (

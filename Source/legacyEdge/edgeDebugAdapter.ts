@@ -107,6 +107,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					"portOccupiedByAnotherProcess",
 					port,
 				);
+
 				return coreUtils.errP(
 					localize(
 						"edge.port.occupied",
@@ -155,8 +156,10 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 		return super.launch(args).then(() => {
 			let runtimeExecutable: string;
+
 			if (args.runtimeExecutable) {
 				const re = findExecutable(args.runtimeExecutable);
+
 				if (!re) {
 					return errors.getNotExistErrorResponse(
 						"runtimeExecutable",
@@ -168,6 +171,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			}
 
 			runtimeExecutable = runtimeExecutable || utils.getEdgePath();
+
 			if (!runtimeExecutable) {
 				return coreUtils.errP(
 					localize(
@@ -179,7 +183,9 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 			// Start with remote debugging enabled
 			const edgeArgs: string[] = [];
+
 			const edgeEnv: { [key: string]: string } = args.env || null;
+
 			const edgeWorkingDir: string = args.cwd || null;
 
 			if (!args.noDebug) {
@@ -188,6 +194,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			}
 
 			let launchUrl: string;
+
 			if (args.file) {
 				launchUrl = coreUtils.pathToFileURL(args.file);
 			} else if (args.url) {
@@ -347,9 +354,11 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						const properties = {
 							"Versions.Target.UserAgent": userAgent,
 						};
+
 						const edgeVersionMatch = userAgent.match(
 							/Edge\/([0-9]+(?:.[0-9]+)+)/,
 						);
+
 						if (edgeVersionMatch && edgeVersionMatch[1]) {
 							properties["Versions.Target.Version"] =
 								edgeVersionMatch[1];
@@ -370,6 +379,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 								"Error trying to use EDP api for protocol version " +
 									err.message,
 							);
+
 							return [];
 						},
 					);
@@ -430,6 +440,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			}
 
 			const closeTabApiUrl = `http://127.0.0.1:${this._debugProxyPort}/json/close/${this._debuggerId}`;
+
 			return coreUtils.getURL(closeTabApiUrl).then(
 				() => {
 					this._edgeProc = null;
@@ -456,6 +467,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		args: DebugProtocol.VariablesArguments,
 	): Promise<IVariablesResponseBody> {
 		let variablesResponse = await super.variables(args);
+
 		let filteredVariables: DebugProtocol.Variable[] = [];
 
 		for (let variable of variablesResponse.variables) {
@@ -485,6 +497,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		}
 
 		variablesResponse.variables = filteredVariables;
+
 		return variablesResponse;
 	}
 
@@ -516,6 +529,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 	protected onExecutionContextsCleared(): Promise<void> {
 		this._navigationInProgress = true;
+
 		return super.onExecutionContextsCleared().then(() => {
 			this._navigationInProgress = false;
 			this.sendBackloggedLoadedSourceEvents();
@@ -558,6 +572,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		usingRuntimeExecutable: boolean,
 	): ChildProcess {
 		this.events.emitStepStarted("LaunchTarget.LaunchExe");
+
 		if (
 			coreUtils.getPlatform() === coreUtils.Platform.Windows &&
 			!usingRuntimeExecutable
@@ -566,6 +581,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				execArgv: [],
 				silent: true,
 			};
+
 			if (env) {
 				options["env"] = {
 					...process.env,
@@ -604,10 +620,12 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			return edgeProc;
 		} else {
 			logger.log(`spawn('${edgePath}', ${JSON.stringify(edgeArgs)})`);
+
 			const options = {
 				detached: true,
 				stdio: ["ignore"],
 			};
+
 			if (env) {
 				options["env"] = {
 					...process.env,
@@ -619,6 +637,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			}
 			const edgeProc = spawn(edgePath, edgeArgs, options);
 			edgeProc.unref();
+
 			return edgeProc;
 		}
 	}
@@ -631,7 +650,9 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	): DebugProtocol.Variable {
 		let variable: ExtendedDebugProtocolVariable =
 			super.createPrimitiveVariable(name, object, parentEvaluateName);
+
 		const edgeRemoteObject = object as ExtendedEdgeRemoteObject;
+
 		if (edgeRemoteObject.msDebuggerPropertyId) {
 			variable.msDebuggerPropertyId =
 				edgeRemoteObject.msDebuggerPropertyId;
@@ -650,6 +671,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		 */
 		const useRuntimeCallFunctionOnForAllVariables =
 			this._edgeProtocolVersion.isAtLeastVersion(0, 2);
+
 		return new MSPropertyContainer(
 			object.objectId,
 			useRuntimeCallFunctionOnForAllVariables,
@@ -686,12 +708,14 @@ export function resolveWebRootPattern(
 	warnOnMissing: boolean,
 ): ISourceMapPathOverrides {
 	const resolvedOverrides: ISourceMapPathOverrides = {};
+
 	for (let pattern in sourceMapPathOverrides) {
 		const replacePattern = replaceWebRootInSourceMapPathOverridesEntry(
 			webRoot,
 			pattern,
 			warnOnMissing,
 		);
+
 		const replacePatternValue = replaceWebRootInSourceMapPathOverridesEntry(
 			webRoot,
 			sourceMapPathOverrides[pattern],
@@ -710,6 +734,7 @@ function replaceWebRootInSourceMapPathOverridesEntry(
 	warnOnMissing: boolean,
 ): string {
 	const webRootIndex = entry.indexOf("${webRoot}");
+
 	if (webRootIndex === 0) {
 		if (webRoot) {
 			return entry.replace("${webRoot}", webRoot);
@@ -734,10 +759,13 @@ function getEdgeSpawnHelperPath(): string {
 function findExecutable(program: string): string | undefined {
 	if (process.platform === "win32" && !path.extname(program)) {
 		const PATHEXT = process.env["PATHEXT"];
+
 		if (PATHEXT) {
 			const executableExtensions = PATHEXT.split(";");
+
 			for (const extension of executableExtensions) {
 				const programPath = program + extension;
+
 				if (fs.existsSync(programPath)) {
 					return programPath;
 				}

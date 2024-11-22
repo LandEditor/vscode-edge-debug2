@@ -8,8 +8,11 @@ import { chromeConnection, utils as coreUtils } from "vscode-chrome-debug-core";
 const WIN_APPDATA = process.env.LOCALAPPDATA || "/";
 
 const MSEDGE_STABLE_VERSION = "stable";
+
 const MSEDGE_BETA_VERSION = "beta";
+
 const MSEDGE_DEV_VERSION = "dev";
+
 const MSEDGE_CANARY_VERSION = "canary";
 
 interface IWindowsMSEdgePaths {
@@ -66,23 +69,29 @@ const OSX_MSEDGE_PATHS = {
 
 export function getBrowserPath(msedgeVersion: string): string {
 	const platform = coreUtils.getPlatform();
+
 	if (platform === coreUtils.Platform.Windows) {
 		let possiblePaths: IWindowsMSEdgePaths;
+
 		switch (msedgeVersion) {
 			case MSEDGE_STABLE_VERSION: {
 				possiblePaths = WINx86_STABLE_PATHS;
+
 				break;
 			}
 			case MSEDGE_BETA_VERSION: {
 				possiblePaths = WINx86_BETA_PATHS;
+
 				break;
 			}
 			case MSEDGE_DEV_VERSION: {
 				possiblePaths = WINx86_DEV_PATHS;
+
 				break;
 			}
 			case MSEDGE_CANARY_VERSION: {
 				possiblePaths = WINx86_CANARY_PATHS;
+
 				break;
 			}
 			default: {
@@ -92,21 +101,26 @@ export function getBrowserPath(msedgeVersion: string): string {
 		return getWindowsExecutable(possiblePaths);
 	} else if (platform === coreUtils.Platform.OSX) {
 		let macInstallPath: string;
+
 		switch (msedgeVersion) {
 			case MSEDGE_STABLE_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_STABLE_PATH;
+
 				break;
 			}
 			case MSEDGE_BETA_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_BETA_PATH;
+
 				break;
 			}
 			case MSEDGE_DEV_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_DEV_PATH;
+
 				break;
 			}
 			case MSEDGE_CANARY_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_CANARY_PATH;
+
 				break;
 			}
 			default: {

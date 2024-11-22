@@ -59,6 +59,7 @@ export class EdgeConfigurationProvider
 				"edge.debug.error.versionNotSupported",
 				"Your version of Microsoft Edge does not support debugging via the Edge DevTools Protocol. You can read more about supported versions here (https://aka.ms/edp-docs).",
 			);
+
 			return vscode.window.showErrorMessage(errorMessage).then((_) => {
 				return undefined;
 			});
@@ -79,6 +80,7 @@ export class EdgeConfigurationProvider
 				);
 
 			let targets;
+
 			try {
 				targets = await discovery.getAllTargets(
 					config.address || "127.0.0.1",
@@ -92,6 +94,7 @@ export class EdgeConfigurationProvider
 
 			if (targets && targets.length > 1) {
 				const selectedTarget = await pickTarget(targets);
+
 				if (!selectedTarget) {
 					// Quickpick canceled, bail
 					return null;
@@ -137,11 +140,13 @@ async function pickTarget(
 	);
 
 	const placeHolder = localize("edge.targets.placeholder", "Select a tab");
+
 	const selected = await vscode.window.showQuickPick(items, {
 		placeHolder,
 		matchOnDescription: true,
 		matchOnDetail: true,
 	});
+
 	return selected;
 }
 

@@ -79,6 +79,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 					),
 				);
 			});
+
 			return value;
 		}
 
