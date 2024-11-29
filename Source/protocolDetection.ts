@@ -16,6 +16,7 @@ export class ProtocolDetection {
 		timeout: number,
 	): Promise<string> {
 		const url = `http://${address}:${port}/json/version`;
+
 		this.logger.log(
 			`Getting browser and debug protocol version via ${url}`,
 		);
@@ -48,6 +49,7 @@ export class ProtocolDetection {
 		}
 
 		const browserProtocol = detectedBrowserJsonVersion.Browser as string;
+
 		this.logger.log(`Got debug protocol version: ${browserProtocol}`);
 
 		return browserProtocol;

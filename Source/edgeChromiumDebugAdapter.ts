@@ -23,12 +23,15 @@ import * as errors from "./errors";
 
 class ConnectionInfo {
 	public port: number;
+
 	public id: string;
+
 	public connection: chromeConnection.ChromeConnection;
 }
 
 export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 	private _isDebuggerUsingWebView: boolean;
+
 	private _webviewPipeServer: net.Server;
 	// a test comment
 
@@ -62,10 +65,12 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 			const webViewTelemetry =
 				args.useWebView === "advanced" ? "advanced" : "true";
+
 			telemetryPropertyCollector.addTelemetryProperty(
 				"useWebView",
 				webViewTelemetry,
 			);
+
 			this._isDebuggerUsingWebView = true;
 
 			if (!args.noDebug) {
@@ -80,6 +85,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 					// Create the webview server that will inform us of webview creation events
 					const pipeName = await this.createWebViewServer(args);
+
 					args.env["WEBVIEW2_PIPE_FOR_SCRIPT_DEBUGGER"] = pipeName;
 				} else {
 					// For normal scenarios use the port specified or 2015 by default
@@ -92,6 +98,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 							`vscode-edge-debug-userdatadir_${args.port}`,
 						);
 					}
+
 					this._webViewCreatedCallback(args.port);
 				}
 
@@ -101,13 +108,16 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					args.env["WEBVIEW2_USER_DATA_FOLDER"] =
 						args.userDataDir.toString();
 				}
+
 				args.env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] =
 					`--remote-debugging-port=${args.port}`;
+
 				args.env["WEBVIEW2_WAIT_FOR_SCRIPT_DEBUGGER"] = "true";
 			}
 
 			// To ensure the ChromeDebugAdapter does not override the launchUrl for WebView we force noDebug=true.
 			attachToWebView = !args.noDebug;
+
 			args.noDebug = true;
 		}
 
@@ -220,6 +230,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 
 			if (lines.length > 0) {
 				const filePort = parseInt(lines[0], 10);
+
 				port = isNaN(filePort) ? args.port : filePort;
 			}
 		} else {
@@ -263,6 +274,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 		const serverName = `\\\\.\\pipe\\WebView2\\Debugger\\${exeName}\\${pipeName}`;
 
 		const targetUrl = this.getWebViewLaunchUrl(args);
+
 		this._targetUrl = targetUrl;
 
 		// Clean up any previous pipe
@@ -282,6 +294,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				const address = args.address || "127.0.0.1";
 
 				const webSocketUrl = `ws://${address}:${port}/devtools/${connectionInfo.type}/${connectionInfo.id}`;
+
 				logger.verbose("new webview: " + webSocketUrl);
 
 				// keep the list of connections so we can lookup the port to debug on and clean up later
@@ -289,9 +302,13 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 					new chromeConnection.ChromeConnection();
 
 				const newConnection: ConnectionInfo = new ConnectionInfo();
+
 				newConnection.id = connectionInfo.id;
+
 				newConnection.port = port;
+
 				newConnection.connection = webViewConnection;
+
 				this._connections.push(newConnection);
 
 				webViewConnection.attachToWebsocketUrl(webSocketUrl);
@@ -300,6 +317,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 				webViewConnection.api.Page.on("frameNavigated", (event) =>
 					this._onFrameNavigated(event),
 				);
+
 				webViewConnection.api.Page.enable(); // if you don't enable you won't get the frameNavigated events
 
 				// Unblock the new webview
@@ -344,9 +362,11 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 			const url = framePayload.frame.url;
 
 			const id = framePayload.frame.id;
+
 			logger.verbose("onFrameNavigated: " + url);
 
 			const webViewTarget = [{ url: url } as chromeConnection.ITarget];
+
 			logger.verbose(
 				"checking for matching target: " +
 					webViewTarget[0].url +
@@ -370,6 +390,7 @@ export class EdgeChromiumDebugAdapter extends ChromeDebugAdapter {
 						this._webViewCreatedCallback(
 							this._connections[key].port,
 						);
+
 						this._debugActive = true;
 					}
 

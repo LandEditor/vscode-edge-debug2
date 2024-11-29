@@ -111,11 +111,13 @@ export class EdgeConfigurationProvider
 function toggleSkippingFile(path: string): void {
 	if (!path) {
 		const activeEditor = vscode.window.activeTextEditor;
+
 		path = activeEditor && activeEditor.document.fileName;
 	}
 
 	const args: Core.IToggleSkipFileStatusArgs =
 		typeof path === "string" ? { path } : { sourceReference: path };
+
 	vscode.commands.executeCommand(
 		"workbench.customDebugRequest",
 		"toggleSkipFileStatus",

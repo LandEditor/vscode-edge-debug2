@@ -17,6 +17,7 @@ const MSEDGE_CANARY_VERSION = "canary";
 
 interface IWindowsMSEdgePaths {
 	WINx86_SYSTEMPATH: string;
+
 	WINx86_USERPATH: string;
 }
 
@@ -79,25 +80,30 @@ export function getBrowserPath(msedgeVersion: string): string {
 
 				break;
 			}
+
 			case MSEDGE_BETA_VERSION: {
 				possiblePaths = WINx86_BETA_PATHS;
 
 				break;
 			}
+
 			case MSEDGE_DEV_VERSION: {
 				possiblePaths = WINx86_DEV_PATHS;
 
 				break;
 			}
+
 			case MSEDGE_CANARY_VERSION: {
 				possiblePaths = WINx86_CANARY_PATHS;
 
 				break;
 			}
+
 			default: {
 				return null;
 			}
 		}
+
 		return getWindowsExecutable(possiblePaths);
 	} else if (platform === coreUtils.Platform.OSX) {
 		let macInstallPath: string;
@@ -108,25 +114,30 @@ export function getBrowserPath(msedgeVersion: string): string {
 
 				break;
 			}
+
 			case MSEDGE_BETA_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_BETA_PATH;
 
 				break;
 			}
+
 			case MSEDGE_DEV_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_DEV_PATH;
 
 				break;
 			}
+
 			case MSEDGE_CANARY_VERSION: {
 				macInstallPath = OSX_MSEDGE_PATHS.OSX_CANARY_PATH;
 
 				break;
 			}
+
 			default: {
 				return null;
 			}
 		}
+
 		return macInstallPath;
 	} else {
 		return null;
@@ -155,6 +166,7 @@ export class DebounceHelper {
 		if (!this.waitToken) {
 			this.waitToken = setTimeout(() => {
 				this.waitToken = null;
+
 				fn();
 			}, this.timeoutMs);
 		}
@@ -166,6 +178,7 @@ export class DebounceHelper {
 	public doAndCancel(fn: () => any): void {
 		if (this.waitToken) {
 			clearTimeout(this.waitToken);
+
 			this.waitToken = null;
 		}
 

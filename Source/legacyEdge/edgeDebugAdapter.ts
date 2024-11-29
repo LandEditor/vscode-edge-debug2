@@ -59,24 +59,35 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	private static PAGE_PAUSE_MESSAGE = "Paused in Visual Studio Code";
 
 	private _edgeProc: ChildProcess;
+
 	private _edgePID: number;
+
 	private _breakOnLoadActive = false;
+
 	private _userRequestedUrl: string;
+
 	private _debuggerId: string;
+
 	private _debugProxyPort: number;
+
 	private _scriptParsedEventBookKeeping = {};
+
 	private _navigatingToUserRequestedUrl = false;
+
 	private _navigationInProgress = false;
+
 	private _unsentLoadedSourceEvents: [
 		Crdp.Debugger.ScriptParsedEvent,
 		LoadedSourceEventReason,
 	][] = [];
+
 	private _edgeProtocolVersion: Version;
 
 	public initialize(
 		args: DebugProtocol.InitializeRequestArguments,
 	): DebugProtocol.Capabilities {
 		const capabilities = super.initialize(args);
+
 		capabilities.supportsRestartRequest = true;
 
 		if (args.locale) {
@@ -93,6 +104,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		// See if EDP is using the port, if that's the case we can still launch
 		// We see if we can hit /json/version endpoint to verify if EDP is running on the port
 		const url = `http://${address}:${port}/json/version`;
+
 		logger.log(`Checking if EDP is running on the port by hitting ${url}`);
 
 		const jsonResponse = await coreUtils
@@ -103,6 +115,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				logger.log(
 					`There was an error connecting to ${url} : ${e.message}`,
 				);
+
 				telemetry.telemetry.reportEvent(
 					"portOccupiedByAnotherProcess",
 					port,
@@ -139,6 +152,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				logger.log(
 					`There was an error trying to verify port usage: ${err}`,
 				);
+
 				telemetry.telemetry.reportEvent(
 					"errorCheckingDebuggingPortOccupiedByAnotherProcess",
 					err,
@@ -152,6 +166,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 		// Check if the port is being used by another process
 		this.events.emitStepStarted("Launch.CheckWhetherPortOccupied");
+
 		await this._checkPortOccupied(args.address, port);
 
 		return super.launch(args).then(() => {
@@ -190,6 +205,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 			if (!args.noDebug) {
 				edgeArgs.push("--devtools-server-port");
+
 				edgeArgs.push(port.toString());
 			}
 
@@ -200,6 +216,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			} else if (args.url) {
 				launchUrl = args.url;
 			}
+
 			if (launchUrl) {
 				// We store the launch file/url provided by the user and temporarily launch and attach to a custom landing page using file url.
 				// Once we receive configurationDone() event, we redirect the page to the user file/url
@@ -211,9 +228,11 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				let landingPagePath = path.dirname(
 					path.dirname(path.dirname(__dirname)),
 				);
+
 				launchUrl = encodeURI(
 					"file:///" + landingPagePath + "/landingPage.html",
 				);
+
 				this._breakOnLoadActive = true;
 
 				edgeArgs.push(launchUrl);
@@ -226,9 +245,12 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				edgeWorkingDir,
 				!!args.runtimeExecutable,
 			);
+
 			this._edgeProc.on("error", (err) => {
 				const errMsg = "Chrome error: " + err;
+
 				logger.error(errMsg);
+
 				this.terminateSession(errMsg);
 			});
 
@@ -243,6 +265,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 						args.extraCRDPChannelPort,
 					).then(() => {
 						this._scriptParsedEventBookKeeping = {};
+
 						this._debugProxyPort = port;
 
 						if (
@@ -275,9 +298,12 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		if (this._breakOnLoadActive) {
 			// This means all the setBreakpoints requests have been completed. So we can navigate to the original file/url.
 			this._navigatingToUserRequestedUrl = true;
+
 			this.chrome.Page.navigate({ url: this._userRequestedUrl });
+
 			this.events.emitMilestoneReached("RequestedNavigateToUserPage");
 		}
+
 		return super.configurationDone();
 	}
 
@@ -297,15 +323,18 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 	public commonArgs(args: ICommonRequestArgs): void {
 		if (args.webRoot && (!args.pathMapping || !args.pathMapping["/"])) {
 			args.pathMapping = args.pathMapping || {};
+
 			args.pathMapping["/"] = args.webRoot;
 		}
 
 		args.sourceMaps =
 			typeof args.sourceMaps === "undefined" || args.sourceMaps;
+
 		args.sourceMapPathOverrides = getSourceMapPathOverrides(
 			args.webRoot,
 			args.sourceMapPathOverrides,
 		);
+
 		args.skipFileRegExps = ["^chrome-extension:.*"];
 
 		super.commonArgs(args);
@@ -317,6 +346,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 		if (version === "v1.2") {
 			return Version.parse("0.1");
 		}
+
 		return Version.parse(version.substring(1));
 	}
 
@@ -343,6 +373,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					expression: "navigator.userAgent",
 					silent: true,
 				}).then((evalResponse) => evalResponse.result.value);
+
 				userAgentPromise.then(
 					(userAgent) => logger.log("Target userAgent: " + userAgent),
 					(err) =>
@@ -363,6 +394,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 							properties["Versions.Target.Version"] =
 								edgeVersionMatch[1];
 						}
+
 						return properties;
 					},
 				);
@@ -385,6 +417,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					);
 
 				let protocolVersion = await protocolVersionPromise;
+
 				this._edgeProtocolVersion = protocolVersion.length
 					? this.processEDPProtocolVersion(protocolVersion[0].version)
 					: Version.unknownVersion();
@@ -524,6 +557,7 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 				this.sendLoadedSourceEvent(event[0], event[1]),
 			),
 		);
+
 		this._unsentLoadedSourceEvents = [];
 	}
 
@@ -532,12 +566,14 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 
 		return super.onExecutionContextsCleared().then(() => {
 			this._navigationInProgress = false;
+
 			this.sendBackloggedLoadedSourceEvents();
 		});
 	}
 
 	protected clearTargetContext(): void {
 		super.clearTargetContext();
+
 		this._scriptParsedEventBookKeeping = {};
 	}
 
@@ -552,11 +588,13 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 			if (!reason) {
 				if (!this._scriptParsedEventBookKeeping[script.scriptId]) {
 					this._scriptParsedEventBookKeeping[script.scriptId] = true;
+
 					reason = "new";
 				} else {
 					reason = "changed";
 				}
 			}
+
 			return super.sendLoadedSourceEvent(script, reason);
 		} else {
 			// If navigation is in progress, create an array for unsent loaded source events and send them once navigation is done
@@ -588,24 +626,30 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					...env,
 				};
 			}
+
 			if (cwd) {
 				options["cwd"] = cwd;
 			}
+
 			const edgeProc = fork(
 				getEdgeSpawnHelperPath(),
 				[edgePath, ...edgeArgs],
 				options,
 			);
+
 			edgeProc.unref();
 
 			edgeProc.on("message", (data) => {
 				const pidStr = data.toString();
+
 				logger.log("got edge PID: " + pidStr);
+
 				this._edgePID = parseInt(pidStr, 10);
 			});
 
 			edgeProc.on("error", (err) => {
 				const errMsg = "edgeSpawnHelper error: " + err;
+
 				logger.error(errMsg);
 			});
 
@@ -632,10 +676,13 @@ export class EdgeDebugAdapter extends CoreDebugAdapter {
 					...env,
 				};
 			}
+
 			if (cwd) {
 				options["cwd"] = cwd;
 			}
+
 			const edgeProc = spawn(edgePath, edgeArgs, options);
+
 			edgeProc.unref();
 
 			return edgeProc;
@@ -787,6 +834,7 @@ function doesProcessExist(pid: number) {
 		if (e.code === "ESRCH") {
 			return false;
 		}
+
 		throw e;
 	}
 

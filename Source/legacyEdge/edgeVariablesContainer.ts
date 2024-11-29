@@ -14,6 +14,7 @@ const localize = nls.loadMessageBundle();
 interface EdgeDebugClient extends Crdp.DebuggerApi {
 	msSetDebuggerPropertyValue(payload: {
 		debuggerPropertyId: string;
+
 		newValue: string;
 	}): Promise<{}>;
 }
@@ -56,6 +57,7 @@ export class MSPropertyContainer extends variables.PropertyContainer {
 				delete extendedVarialbe.msDebuggerPropertyId;
 			}
 		}
+
 		return vars;
 	}
 

@@ -53,9 +53,13 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 	private _pagePauseMessage = "Paused in Visual Studio Code";
 
 	public _chromeProc: ChildProcess;
+
 	private _overlayHelper: utils.DebounceHelper;
+
 	private _chromePID: number;
+
 	private _userRequestedUrl: string;
+
 	private _doesHostSupportLaunchUnelevatedProcessRequest: boolean;
 
 	public initialize(
@@ -66,8 +70,11 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 		const capabilities: VSDebugProtocolCapabilities = super.initialize(
 			args,
 		);
+
 		capabilities.supportsRestartRequest = true;
+
 		capabilities.supportsSetExpression = true;
+
 		capabilities.supportsLogPoints = true;
 
 		if (args.locale) {
@@ -101,12 +108,14 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 					args.shouldLaunchEdgeUnelevated.toString(),
 				);
 			}
+
 			if (this._doesHostSupportLaunchUnelevatedProcessRequest) {
 				telemetryPropertyCollector.addTelemetryProperty(
 					"doesHostSupportLaunchUnelevated",
 					"true",
 				);
 			}
+
 			if (args.runtimeExecutable) {
 				// users should not be setting version flag if they are using runtimeExecutable
 				if (args["version"]) {
@@ -115,6 +124,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 						"Not to be used with 'runtimeExecutable'",
 					);
 				}
+
 				const re = findExecutable(args.runtimeExecutable);
 
 				if (!re) {
@@ -123,6 +133,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 						args.runtimeExecutable,
 					);
 				}
+
 				runtimeExecutable = re;
 			} else if (args["version"]) {
 				runtimeExecutable = utils.getBrowserPath(args["version"]);
@@ -166,6 +177,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 					"numberOfEdgeCmdLineSwitchesBeingUsed",
 					String(args.runtimeArgs.length),
 				);
+
 				chromeArgs.push(...args.runtimeArgs);
 			} else {
 				telemetryPropertyCollector.addTelemetryProperty(
@@ -207,6 +219,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 				// We store the launch file/url provided and temporarily launch and attach to about:blank page. Once we receive configurationDone() event, we redirect the page to this file/url
 				// This is done to facilitate hitting breakpoints on load
 				this._userRequestedUrl = launchUrl;
+
 				launchUrl = "about:blank";
 			}
 
@@ -226,7 +239,9 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			if (this._chromeProc) {
 				this._chromeProc.on("error", (err) => {
 					const errMsg = "Edge error: " + err;
+
 					logger.error(errMsg);
+
 					this.terminateSession(errMsg);
 				});
 			}
@@ -254,6 +269,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
 	protected hookConnectionEvents(): void {
 		super.hookConnectionEvents();
+
 		this.chrome.Page.on("frameNavigated", (params) =>
 			this.onFrameNavigated(params),
 		);
@@ -321,15 +337,18 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 	public commonArgs(args: ICommonRequestArgs): void {
 		if (args.webRoot && (!args.pathMapping || !args.pathMapping["/"])) {
 			args.pathMapping = args.pathMapping || {};
+
 			args.pathMapping["/"] = args.webRoot;
 		}
 
 		args.sourceMaps =
 			typeof args.sourceMaps === "undefined" || args.sourceMaps;
+
 		args.sourceMapPathOverrides = getSourceMapPathOverrides(
 			args.webRoot,
 			args.sourceMapPathOverrides,
 		);
+
 		args.skipFileRegExps = ["^chrome-extension:.*"];
 
 		if (args.targetTypes === undefined) {
@@ -414,6 +433,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 								// Currently response.product looks like "Chrome/65.0.3325.162" so we split the project and the actual version number
 								properties["Versions.Target.Project"] =
 									parts[0];
+
 								properties["Versions.Target.Version"] =
 									parts[1];
 							} else {
@@ -421,6 +441,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 								properties["Versions.Target.Product"] =
 									response.product;
 							}
+
 							return properties;
 						},
 						(err) => {
@@ -432,6 +453,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 								"Versions.Target.NoUserAgentReason":
 									"Error while retriving target user agent",
 							} as telemetry.IExecutionResultTelemetryProperties;
+
 							coreUtils.fillErrorDetails(properties, err);
 
 							return properties;
@@ -484,6 +506,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 							const alternativeBrowserVersion = Version.parse(
 								versionInformation["Versions.Target.Version"],
 							);
+
 							this._breakOnLoadHelper.setBrowserVersion(
 								alternativeBrowserVersion,
 							);
@@ -571,6 +594,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 				this.killChromeOnWindows(this._chromePID);
 			} else if (this._chromeProc) {
 				logger.log("Killing Edge process");
+
 				this._chromeProc.kill("SIGINT");
 			}
 		}
@@ -580,6 +604,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
 	private async killChromeOnWindows(chromePID: number): Promise<void> {
 		let taskkillCmd = `taskkill /PID ${chromePID}`;
+
 		logger.log(`Killing Edge process by pid: ${taskkillCmd}`);
 
 		try {
@@ -591,6 +616,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 		for (let i = 0; i < 10; i++) {
 			// Check to see if the process is still running, with CSV output format
 			let tasklistCmd = `tasklist /FI "PID eq ${chromePID}" /FO CSV`;
+
 			logger.log(`Looking up process by pid: ${tasklistCmd}`);
 
 			let tasklistOutput = execSync(tasklistCmd).toString();
@@ -608,6 +634,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			logger.log(
 				`Edge process with pid ${chromePID} is still alive, waiting...`,
 			);
+
 			await new Promise<void>((resolve) => {
 				setTimeout(resolve, 200);
 			});
@@ -615,6 +642,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 
 		// At this point we can assume the process won't close on its own, so force kill it
 		let taskkillForceCmd = `taskkill /F /PID ${chromePID}`;
+
 		logger.log(
 			`Killing Edge process timed out. Killing again using force: ${taskkillForceCmd}`,
 		);
@@ -682,24 +710,30 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			if (env) {
 				options["env"] = this.getFullEnv(env);
 			}
+
 			if (cwd) {
 				options["cwd"] = cwd;
 			}
+
 			const chromeProc = fork(
 				getChromeSpawnHelperPath(),
 				[chromePath, ...chromeArgs],
 				options,
 			);
+
 			chromeProc.unref();
 
 			chromeProc.on("message", (data) => {
 				const pidStr = data.toString();
+
 				logger.log("got Edge PID: " + pidStr);
+
 				this._chromePID = parseInt(pidStr, 10);
 			});
 
 			chromeProc.on("error", (err) => {
 				const errMsg = "chromeSpawnHelper error: " + err;
+
 				logger.error(errMsg);
 			});
 
@@ -723,10 +757,13 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			if (env) {
 				options["env"] = this.getFullEnv(env);
 			}
+
 			if (cwd) {
 				options["cwd"] = cwd;
 			}
+
 			const chromeProc = spawn(chromePath, chromeArgs, options);
+
 			chromeProc.unref();
 
 			this._chromePID = chromeProc.pid;
@@ -748,6 +785,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 			// remove the previous semaphoreFile if it exists.
 			fs.unlinkSync(semaphoreFile);
 		}
+
 		const chromeProc = fork(
 			getChromeSpawnHelperPath(),
 			[
@@ -761,6 +799,7 @@ export class ChromeDebugAdapter extends CoreDebugAdapter {
 		);
 
 		chromeProc.unref();
+
 		await new Promise<void>((resolve, reject) => {
 			chromeProc.on("message", resolve);
 		});
@@ -973,6 +1012,7 @@ async function findNewlyLaunchedChromeProcess(
 			}
 			// else == 0, wait for 200 ms delay and try again.
 		}
+
 		await new Promise<void>((resolve) => {
 			setTimeout(resolve, 200);
 		});

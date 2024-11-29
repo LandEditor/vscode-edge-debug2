@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 			toggleSkippingFile,
 		),
 	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			"extension.edge-debug.toggleSmartStep",
@@ -176,12 +177,14 @@ export class EdgeConfigurationProvider
 function toggleSkippingFile(path: string): void {
 	if (!path) {
 		const activeEditor = vscode.window.activeTextEditor;
+
 		path = activeEditor && activeEditor.document.fileName;
 	}
 
 	if (path && vscode.debug.activeDebugSession) {
 		const args: Core.IToggleSkipFileStatusArgs =
 			typeof path === "string" ? { path } : { sourceReference: path };
+
 		vscode.debug.activeDebugSession.customRequest(
 			"toggleSkipFileStatus",
 			args,
@@ -235,5 +238,6 @@ function msedgeIsOnMachine(): boolean {
 	if (getBrowserPath("stable") != null) {
 		return true;
 	}
+
 	return false;
 }
