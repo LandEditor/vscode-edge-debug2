@@ -814,7 +814,7 @@
 	"description": "%extension.description%",
 	"devDependencies": {
 		"@types/mockery": "1.4.33",
-		"@types/node": "22.10.0",
+		"@types/node": "22.10.1",
 		"@types/source-map": "0.5.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.0",
