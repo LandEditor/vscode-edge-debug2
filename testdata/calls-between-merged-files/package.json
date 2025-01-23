@@ -7,7 +7,7 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
-		"@types/node": "22.10.9",
+		"@types/node": "22.10.10",
 		"http-server": "14.1.1"
 	}
 }
