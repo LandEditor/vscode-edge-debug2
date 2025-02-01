@@ -827,7 +827,7 @@
 	},
 	"devDependencies": {
 		"@types/mockery": "1.4.33",
-		"@types/node": "22.10.10",
+		"@types/node": "22.13.0",
 		"@types/source-map": "0.5.7",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
